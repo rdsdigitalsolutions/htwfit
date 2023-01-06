@@ -1,17 +1,18 @@
-import { getCollection, closeConnection, migrateUser, getObjectId } from '../lib/mongodb'
+import { getCollection, closeConnection, migrateUser } from '../lib/mongodb'
 
 export async function findOne({ id, email, password }) {
     let result;
 
     try {
-        const users = await getCollection({name:'users'});
-
+        const collection = await getCollection({name:'users'});
+        
         // Migrate default users for tests
         if (process.env.NODE_ENV !== 'prod') {
-            await migrateUser(users);
+            const testMigration = await collection.findOne({ update: null });
+            if(!testMigration) await migrateUser(collection);
         }
 
-        result = await users.findOne( id ? { _id: getObjectId(id) } : {email, password});
+        result = await collection.findOne( id ? { id } : {email, password});
         await closeConnection();
     } catch (e) {
         console.log(e);

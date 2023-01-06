@@ -1,5 +1,5 @@
 import { getSession } from "next-auth/react";
-import { findOne, update } from '../../../repository/user'
+import { findOne, update } from '../../../repository/plan'
 
 export default async function handler(req, res) {
     const session = await getSession({ req });
@@ -24,21 +24,11 @@ export default async function handler(req, res) {
 }
 
 const handleGet = async (req, res, session) => {
-    const results = await findOne({ id: session.user.id });
+    const results = await findOne({ userId: session.user.id, planId: req.query.planid });
     res.status(200).json(results || {});
 }
 
 const handlePut = async (req, res, session) => {
-    if ((req.body.newPassword || req.body.confirmPassword) && req.body.newPassword !== req.body.confirmPassword) {
-        res.status(401).json({ error: t('errors_paswrod_mismatch') });
-        return;
-    }
-
-    if ((req.body.newPassword || req.body.confirmPassword) && !req.body.currentPassword) {
-        res.status(401).json({ error: t('errors_missing_current_password') });
-        return;
-    }
-
-    const results = await update({ id: session.user.id, changes: req.body });
+    const results = await update({ userId: session.user.id, plan: req.body });
     res.status(200).json(results || {});
 }

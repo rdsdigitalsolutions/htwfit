@@ -10,7 +10,7 @@ export default function ComponentHandler({ children }) {
   return (
     <footer className={styles.footer}>
       <Text h6 weight='bold'>
-        {process.env.NEXT_PUBLIC_APP_NAME} <Badge color="warning" size="xs" variant="flat" isSquared>{t('global_beta')}</Badge>
+        {process.env.NEXT_PUBLIC_APP_NAME} <Badge color="warning" size="xs" variant="flat" isSquared>{t('global_beta')}</Badge> © 2023
       </Text>
     </footer>
   )

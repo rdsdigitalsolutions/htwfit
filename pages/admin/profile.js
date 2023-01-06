@@ -1,10 +1,13 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { unstable_getServerSession } from "next-auth/next"
 import { useTranslation } from 'next-i18next'
 import { useForm, Controller } from "react-hook-form";
-import { Card, Grid, Input, Text, Button, Loading, Avatar } from '@nextui-org/react';
+import { useTheme as useNextTheme } from 'next-themes'
+import { Card, Grid, Input, Text, Button, Loading, Avatar, Dropdown, Spacer, Switch, useTheme } from '@nextui-org/react';
+import { FaGlobeAmericas, FaMoon, FaSun } from "react-icons/fa";
 
 import { authOptions } from "./../api/auth/[...nextauth]"
 import Layout from '../../components/layout'
@@ -12,9 +15,14 @@ import DefaultFetch from '../../lib/default-fetch'
 
 export default function ComponentHandler({ locale, session }) {
   const { t } = useTranslation('common');
+  const router = useRouter();
+  const { pathname, asPath, query } = router;
 
   const [error, setError] = useState('');
   const [processing, setProcessing] = useState(false);
+  const [currentLocale, setCurrentLocale] = useState(new Set([locale]));
+  const { setTheme } = useNextTheme();
+  const { isDark, type } = useTheme();
 
   const { handleSubmit, control, reset } = useForm({
     defaultValues: {
@@ -23,13 +31,18 @@ export default function ComponentHandler({ locale, session }) {
     }
   });
 
+  const handleLocale = (nextLocale) => {
+    setCurrentLocale(new Set([nextLocale]));
+    router.push({ pathname, query }, asPath, { locale: nextLocale });
+  }
+
   const onSubmit = data => {
     setProcessing(true);
 
     DefaultFetch({
       url: `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/v1/user`,
       method: 'PUT',
-      body: JSON.stringify(data),
+      jsonBody: JSON.stringify(data),
     })
       .then((data) => {
         if (data.error) setError(data.error);
@@ -48,6 +61,74 @@ export default function ComponentHandler({ locale, session }) {
 
       <Layout locale={locale} restricted={true} >
         <Grid.Container gap={4} justify="center">
+
+          <Grid xs={6} justify="right">
+            <Dropdown isBordered>
+              <Dropdown.Button
+                auto
+                light
+                css={{
+                  px: 0,
+                  dflex: "center",
+                  svg: { pe: "none" },
+                }}
+                ripple={false}
+              >
+                <FaGlobeAmericas /><Spacer x={0.5} />{t('Idioma')}
+              </Dropdown.Button>
+              <Dropdown.Menu
+                onAction={handleLocale}
+                selectedKeys={currentLocale}
+                aria-label="ACME features"
+                css={{
+                  $$dropdownMenuWidth: "340px",
+                  $$dropdownItemHeight: "70px",
+                  "& .nextui-dropdown-item": {
+                    py: "$4",
+                    // dropdown item left icon
+                    svg: {
+                      color: "$secondary",
+                      mr: "$4",
+                    },
+                    // dropdown item title
+                    "& .nextui-dropdown-item-content": {
+                      w: "100%",
+                      fontWeight: "$semibold",
+                    },
+                  },
+                }}
+              >
+                <Dropdown.Item
+                  key="en-US"
+                  showFullDescription
+                  description="Translate the site to english."
+                // icon={icons.scale}
+                >
+                  English US
+                </Dropdown.Item>
+                <Dropdown.Item
+                  key="pt-BR"
+                  showFullDescription
+                  description="Traduzir este site para Português."
+                // icon={icons.activity}
+                >
+                  Português Brasil
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </Grid>
+
+          <Grid xs={6} justify="left">
+            <Switch
+              // css={{ background: '$inactive' }}
+              color="default"
+              checked={isDark}
+              onChange={(e) => setTheme(e.target.checked ? 'dark' : 'light')}
+              iconOn={<FaMoon />}
+              iconOff={<FaSun />}
+            />
+          </Grid>
+
           <Grid xs={12} md={6} >
             <Card>
               <form onSubmit={handleSubmit(onSubmit)}>

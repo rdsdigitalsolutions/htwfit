@@ -65,6 +65,7 @@ export default function ComponentHandler({ visible, setVisible, providers, local
       aria-labelledby="modal-title"
       open={visible}
       onClose={() => setVisible(false)}
+      css={{margin:10}}
     >
       <Modal.Header>
         <Grid.Container>

@@ -36,7 +36,7 @@ export const authOptions = {
                 }
 
                 const user = await findOne( { email: credentials.username, password: credentials.password } );
-                return user ? { ...user, id: user._id } : null;
+                return user || null;
             }
         })
     ],
