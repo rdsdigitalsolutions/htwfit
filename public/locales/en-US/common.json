@@ -1,0 +1,86 @@
+{
+    "menu_home": "Home Page",
+    "menu_about": "About It",
+    "menu_features": "Site Features",
+    "menu_admin": "Admin Pages",
+    "menu_admin_workout": "Workout",
+    "menu_admin_planning": "Planning",
+    "menu_admin_meals": "Meals",
+    "menu_admin_account": "Manage Account",
+
+    "global_test": "Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful.",
+    "global_beta": "BETA",
+    "global_search": "search",
+    "global_reset": "reset",
+    "global_login": "Login",
+    "global_sign_in_with": "Sign in with",
+    "global_close": "Close",
+    "global_save": "Save",
+    "global_logout": "Logout",
+    "global_username": "Username",
+    "global_current_password": "Current Password",
+    "global_new_password": "New Password",
+    "global_password_confirmation": "Password Confirmation",
+    "global_full_name": "Full Name",
+    "global_remember_me": "Remember me",
+    "global_forgot_password": "Forgot Password",
+    "global_complete": "Complete",
+    "global_in": "in",
+    "global_to": "to",
+    "global_of": "of",
+    "global_Sunday": "Sunday",
+    "global_Monday": "Monday",
+    "global_Tuesday": "Tuesday",
+    "global_Wednesday": "Wednesday",
+    "global_Thursday": "Thursday",
+    "global_Friday": "Friday",
+    "global_Saturday": "Saturday",
+    "global_number_of_repetitions": "Number of repetitions",
+    "global_initial_weight": "Initial weight",
+    "global_cancell_routine": "Cancell Routine",
+    "global_skip": "Skip for now",
+    "global_execute_instruction": "Please execute the first repetition. Once done, start the resting stopwatch",
+    "global_congrats_exercise_done": "Congratulations, exercise done",
+    "global_adjust_weight": "Adjust the weight for the next session",
+    "global_start_next": "Start Next",
+    "global_conclude": "Conclude Routine",
+    "global_get_ready": "Get ready to start again please",
+    "global_rest": "It is time to rest, relax and wait",
+    "global_workout_plan": "Workout Plan",
+    "global_inspire": "Inspire others, share your achievements with your personalized message",
+    "global_printscreen": "Take a printscreen and share on your preferred social media",
+    "global_return_exercises": "Return to exercises",
+    "global_my_meals": "My Meals",
+    "global_weeks": "Weeks",
+    "global_time": "Time",
+    "global_done_today": "Done Today",
+
+
+
+    "errors_invalid_credentials": "Invalid Credentials",
+    "errors_oauth_signin": "Unable to connect account, please contact the support",
+    "errors_unknown": "Unknown error, please contact the support",
+    "errors_paswrod_mismatch": "Password confirmation do not match password!",
+
+    "index_instruction": "Get started by editing",
+
+    "about_title": "About It Page",
+
+    "features_title": "Features Page",
+
+    "workout_title": "Workout Dashboard",
+
+    "settings_title": "Settings Page",
+
+    "account_title": "Manage Account",
+    
+    "product_title": "Products",
+    "product_search": "Search Product",
+    "product_table_price": "Price",
+    "product_table_title": "Title",
+    "product_table_description": "Description"
+
+
+
+
+}
