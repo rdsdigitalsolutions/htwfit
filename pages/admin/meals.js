@@ -52,13 +52,14 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
       .then((data) => {
         if (data.error) setStatusMessage(data.error);
 
-        if (data.modifiedCount === 0) {
+        if (!data || data.modifiedCount === 0) {
           setStatusMessage('Sorry, it was not possible to update, please contact the support.');
           return;
         }
 
         setCurrentPlan(newPlan);
       })
+      .catch( (exception) => setStatusMessage(exception.message) )
       .finally(() => setProcessing(false))
   }
 

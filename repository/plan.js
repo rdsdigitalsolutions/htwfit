@@ -35,12 +35,11 @@ export async function findAll({ userId }) {
         }
 
         results = await (await collection.find({ userId }).toArray() || []).map( cleanDocument );
-        
-        await closeConnection();
     } catch (e) {
         console.log(e);
     }
 
+    await closeConnection();
     return results;
 }
 
@@ -50,10 +49,10 @@ export async function update({ userId, plan }) {
     try {
         const collection = await getCollection({name:'plans'});
         result = await collection.updateOne( { userId, id: plan.id }, {'$set': { ...plan, userId } }, { upsert: false } );
-        await closeConnection();
     } catch (e) {
         console.log(e);
     }
 
+    await closeConnection();
     return result;
 }
