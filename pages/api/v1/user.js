@@ -1,5 +1,5 @@
 import { getSession } from "next-auth/react";
-import { findOne, update } from '../../../repository/user'
+import { findOne } from '../../../repository/user'
 
 export default async function handler(req, res) {
     const session = await getSession({ req });
@@ -28,17 +28,17 @@ const handleGet = async (req, res, session) => {
     res.status(200).json(results || {});
 }
 
-const handlePut = async (req, res, session) => {
-    if ((req.body.newPassword || req.body.confirmPassword) && req.body.newPassword !== req.body.confirmPassword) {
-        res.status(401).json({ error: t('errors_paswrod_mismatch') });
-        return;
-    }
+// const handlePut = async (req, res, session) => {
+//     if ((req.body.newPassword || req.body.confirmPassword) && req.body.newPassword !== req.body.confirmPassword) {
+//         res.status(401).json({ error: t('errors_paswrod_mismatch') });
+//         return;
+//     }
 
-    if ((req.body.newPassword || req.body.confirmPassword) && !req.body.currentPassword) {
-        res.status(401).json({ error: t('errors_missing_current_password') });
-        return;
-    }
+//     if ((req.body.newPassword || req.body.confirmPassword) && !req.body.currentPassword) {
+//         res.status(401).json({ error: t('errors_missing_current_password') });
+//         return;
+//     }
 
-    const results = await update({ id: session.user.id, changes: req.body });
-    res.status(200).json(results || {});
-}
+//     const results = await update({ id: session.user.id, changes: req.body });
+//     res.status(200).json(results || {});
+// }

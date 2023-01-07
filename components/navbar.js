@@ -92,7 +92,7 @@ export default function ComponentHandler({ children, locale, providers, session,
 
         </Navbar.Content>
 
-        <Navbar.Collapse showIn="xs">
+        <Navbar.Collapse showIn="xs" disableAnimation>
           {sessionStatus !== 'authenticated' && <Navbar.CollapseItem>
             <Link color="inherit" css={{ minWidth: "100%" }} onClick={() => setLoginModalVisible(true)}>
               {t('global_login')}
