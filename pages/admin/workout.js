@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import moment from 'moment';
 import { useState, useEffect } from 'react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { unstable_getServerSession } from "next-auth/next"
@@ -7,6 +8,13 @@ import { Text, Grid, Card, Button, Progress, Spacer, Input, Link, Badge } from '
 import { FaPlay, FaAngleDoubleLeft, FaAngleDoubleRight, FaAward, FaSearch, FaCheck, FaGoogle, FaYoutube } from "react-icons/fa";
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import { useStopwatch } from 'react-timer-hook';
+
+import {
+  CircularProgressbar,
+  CircularProgressbarWithChildren,
+  buildStyles
+} from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 import { authOptions } from "./../api/auth/[...nextauth]"
 import { findOne } from '../../repository/plan'
@@ -31,7 +39,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
   const [isResting, setIsResting] = useState(false);
   const [remainingTime, setRemainingTime] = useState(0);
   const [currentRepetitionsStatus, setCurrentRepetitionsStatus] = useState(0);
-  const [weightChange, setWeightChange] = useState(null);
+  const [weightChange, setWeightChange] = useState(0);
 
   const { seconds, minutes, hours, isRunning, start, pause, reset } = useStopwatch({ autoStart: false });
   const totalRepetitionsStatus = selectedExercise ? selectedExercise.training.reduce((acc, curr) => acc + curr.repetitions.length, 0) : 0;
@@ -141,26 +149,27 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
           {selectedExercise && <Grid.Container gap={0.5} justify="right">
             <Spacer y={0.7} />
 
-            <Grid xs={12} justify="center">
-              <Text h5 color='gray'>
-                {selectedExercise.title}
-              </Text>
-            </Grid>
+            {!isDone && <>
+              <Grid xs={12} justify="center">
+                <Text h5 color='gray'>
+                  {selectedExercise.title}
+                </Text>
+              </Grid>
+
+              <Grid xs={12} justify="center">
+                <Progress striped value={((currentRepetitionsStatus / totalRepetitionsStatus) * 100).toFixed(0)} shadow size="xs" color="primary" status="warning" />
+              </Grid>
+
+              <Grid xs={12} justify="center">
+                <Text small>
+                  {((currentRepetitionsStatus / totalRepetitionsStatus) * 100).toFixed(0)}% {t('global_in')} <span>{hours}</span>:<span>{minutes}</span>:<span>{seconds}</span>
+                </Text>
+              </Grid>
+
+              <Spacer y={0.7} />
+            </>}
 
             <Grid xs={12} justify="center">
-              <Progress striped value={((currentRepetitionsStatus / totalRepetitionsStatus) * 100).toFixed(0)} shadow size="xs" color="primary" status="warning" />
-            </Grid>
-
-            <Grid xs={12} justify="center">
-              <Text small>
-                {((currentRepetitionsStatus / totalRepetitionsStatus) * 100).toFixed(0)}% in <span>{hours}</span>:<span>{minutes}</span>:<span>{seconds}</span>
-              </Text>
-            </Grid>
-
-            <Spacer y={0.7} />
-
-            <Grid xs={12} justify="center">
-
 
               {isDone && <>
                 <Grid.Container>
@@ -169,18 +178,69 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                       <Card.Body>
                         <Grid.Container>
                           <Grid xs={12} justify="center">
-                            <Text h6>
-                              Todays' training is
-                            </Text>
+
+                            <Grid.Container>
+                              <Grid xs={4} justify="center">
+
+                                <Grid.Container>
+                                  <Grid xs={12} justify="center">
+                                    <div style={{ width: "80%" }}>
+                                      <CircularProgressbar
+                                        value={((Number((currentPlans.foodPlan.meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlans.lengthInWeeks * 7) * currentPlans.foodPlan.meals.length) * 100).toFixed(0)) + currentPlans.exercises.reduce((acc, curr) => acc + Number(((curr.done.length / (currentPlans.lengthInWeeks * curr.days.length)) * 100).toFixed(0)), 0)) / (currentPlans.exercises.length + 1)).toFixed(0)}
+                                        text={`${((Number((currentPlans.foodPlan.meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlans.lengthInWeeks * 7) * currentPlans.foodPlan.meals.length) * 100).toFixed(0)) + currentPlans.exercises.reduce((acc, curr) => acc + Number(((curr.done.length / (currentPlans.lengthInWeeks * curr.days.length)) * 100).toFixed(0)), 0)) / (currentPlans.exercises.length + 1)).toFixed(0)}%`}
+                                        strokeWidth={15}
+                                        styles={buildStyles({
+                                          backgroundColor: "#3e98c7",
+                                          textColor: "#fff",
+                                          pathColor: "#2abe0c",
+                                          trailColor: "#000",
+                                          textSize: "22px"
+                                        })}
+                                      />
+                                    </div>
+                                  </Grid>
+                                  <Grid xs={12} justify="center">
+                                    <Text small color='gray'>
+                                      {t('global_workout_plan')}
+                                    </Text>
+                                  </Grid>
+                                </Grid.Container>
+                              </Grid>
+                              <Grid xs={8} justify="left">
+                                <Grid.Container>
+                                  <Grid xs={12} justify="center">
+                                    <Text small color='gray'>
+                                      {t(`global_${weekday[moment().format('d')]}`)} {moment().format('DD/MM/YYYY')}
+                                    </Text>
+                                  </Grid>
+                                  <Grid xs={12} justify="center">
+                                    <Text h1 css={{ textAlign: 'center', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '13vw' }} weight="bold">
+                                      DONE!
+                                    </Text>
+                                  </Grid>
+                                  <Grid xs={12} justify="center">
+                                    <Text h6>
+                                      {selectedExercise.title}
+                                    </Text>
+                                  </Grid>
+                                </Grid.Container>
+                              </Grid>
+                            </Grid.Container>
                           </Grid>
-                          <Grid xs={12} justify="center">
-                            <Text h1 css={{ textAlign: 'center', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '13vw' }} weight="bold">
-                              DONE!
-                            </Text>
-                          </Grid>
+                        </Grid.Container>
+                      </Card.Body>
+                    </Card>
+                  </Grid>
+
+                  <Spacer y={0.3} />
+
+                  <Grid xs={12} justify="center">
+                    <Card>
+                      <Card.Body>
+                        <Grid.Container>
                           <Grid xs={12} justify="center">
                             <Text h6 css={{ textAlign: 'center' }} color='gray'>
-                              Inspire others, share your achievements with your personalized message:
+                              {t('global_inspire')}:
                             </Text>
                           </Grid>
                           <Grid xs={12} justify="center">
@@ -188,7 +248,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                               <Card.Body>
                                 <Grid.Container>
                                   <Grid xs={12} justify="center">
-                                    <Spacer y={10} />
+                                    <Spacer y={14} />
                                   </Grid>
                                 </Grid.Container>
                               </Card.Body>
@@ -197,17 +257,18 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                           <Spacer y={0.5} />
                           <Grid xs={12} justify="center">
                             <Text small css={{ textAlign: 'center' }} color='gray'>
-                              Take a printscreen and share on your preferred social media.
+                              {t('global_printscreen')}.
                             </Text>
                           </Grid>
                         </Grid.Container>
                       </Card.Body>
                     </Card>
                   </Grid>
-                  <Spacer y={1.5} />
+
+                  <Spacer y={1} />
                   <Grid xs={12} justify="center">
                     <Button auto bordered size="sm" color='primary' onClick={() => handleCancellRoutine()}>
-                      Return to exercises
+                      {t('global_return_exercises')}
                     </Button>
                   </Grid>
                 </Grid.Container>
@@ -286,26 +347,22 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                     </Grid>}
 
                     {seconds < 10 && minutes === 0 && hours === 0 && <>
+                      <Spacer y={4} />
                       <Card variant="bordered">
                         <Grid xs={12} justify="center">
-                          <Text h1 css={{ textAlign: 'center' }} weight="bold" color='primary'>
-                            Welcome
-                          </Text>
-                        </Grid>
-                        <Grid xs={12} justify="center">
-                          <Text h5 css={{ textAlign: 'center' }} color='gray'>
-                            Please execute the first repetition. Once done, start the resting pause.
+                          <Text h5 css={{ textAlign: 'center' }} color='warning'>
+                            {t('global_execute_instruction')}.
                           </Text>
                         </Grid>
                       </Card>
-
+                      <Spacer y={4} />
                     </>}
 
                     <Spacer y={1} />
 
                     <Grid xs={12} justify="center">
                       <Text h6 color='gray'>
-                        Number of Repetitions
+                        {t('global_number_of_repetitions')}
                       </Text>
                     </Grid>
 
@@ -316,7 +373,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                     {weightChange > 0 && <>
                       <Spacer y={0.5} />
                       <Grid xs={12} justify="center">
-                        <Badge isSquared color='warning' variant="bordered">Initial weight is:<Spacer x={0.2} /> {weightChange}kg</Badge>
+                        <Badge isSquared color='warning' variant="bordered">{t('global_initial_weight')}:<Spacer x={0.2} /> {weightChange}kg</Badge>
                       </Grid>
                     </>}
 
@@ -329,7 +386,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                       <FaAward size={80} />
                       <Spacer x={0.8} />
                       <Text h3 css={{ textAlign: 'left' }} weight="bold">
-                        Congratulations, exercise done.
+                        {t('global_congrats_exercise_done')}.
                       </Text>
                     </Grid>
 
@@ -341,9 +398,9 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                         fullWidth={true}
                         type="text"
                         bordered
-                        initialValue={weightChange || 0}
-                        value={weightChange || 0}
-                        labelPlaceholder={t('Adjust the weight for the next session')}
+                        initialValue={weightChange}
+                        value={weightChange}
+                        label={t('global_adjust_weight')}
                         onChange={(e) => setWeightChange(parseFloat(e.target.value))}
                       />
                     </Grid>
@@ -352,7 +409,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
 
                     <Grid xs={12} justify="center">
                       <Button auto bordered size="md" color='success' onClick={() => handleTrainningConclusion()}>
-                        {currentRepetitionsStatus === totalRepetitionsStatus ? 'Conclude Routine' : 'Start Next'} <Spacer x={0.5} /> <FaAngleDoubleRight />
+                        {currentRepetitionsStatus === totalRepetitionsStatus ? t('global_conclude') : t('global_start_next')} <Spacer x={0.5} /> <FaAngleDoubleRight />
                       </Button>
                     </Grid>
                   </Grid.Container>}
@@ -369,24 +426,24 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
 
               <Grid xs={12} justify="center">
                 {remainingTime > 0 && remainingTime < (currentTrainning.restPause / 4) && <Badge isSquared variant="bordered" color='warning'>
-                  Get ready to start again please.
+                  {t('global_get_ready')}
                 </Badge>}
                 {remainingTime > (currentTrainning.restPause / 4) && <Badge isSquared variant="bordered" color='success'>
-                  It is time to rest, relax and wait.
+                  {t('global_rest')}
                 </Badge>}
               </Grid>
 
               <Spacer y={1} />
 
               <Grid xs={12} justify="center">
-                <Button auto bordered size="sm" color='error' onClick={() => handleCancellRoutine(null)}>
-                  <FaAngleDoubleLeft /><Spacer x={0.5} /> Cancell Routine
+                <Button auto flat size="sm" color='error' onClick={() => handleCancellRoutine(null)}>
+                  <FaAngleDoubleLeft /><Spacer x={0.5} /> {t('global_cancell_routine')}
                 </Button>
 
                 <Spacer x={0.5} />
 
-                <Button auto bordered size="sm" color='warning' onClick={() => handleCurrentTrainning({ skip: true })}>
-                  Skip for now <Spacer x={0.5} /> <FaAngleDoubleRight />
+                <Button auto flat size="sm" color='primary' onClick={() => handleCurrentTrainning({ skip: true })}>
+                  {t('global_skip')} <Spacer x={0.5} /> <FaAngleDoubleRight />
                 </Button>
               </Grid>
             </>}
@@ -434,7 +491,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
 
                       <Grid xs={12} justify="center">
                         <Text h6 color='gray'>
-                          {((exercise.done.length / (currentPlans.lengthInWeeks * exercise.days.length)) * 100).toFixed(0)}% complete.
+                          {((exercise.done.length / (currentPlans.lengthInWeeks * exercise.days.length)) * 100).toFixed(0)}% {t('global_complete')}.
                         </Text>
                       </Grid>
 
@@ -442,7 +499,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
 
                         <Grid xs={12} justify="center">
                           <Button auto type="submit" color={exercise.days.find(dayOfWeek => dayOfWeek === (new Date()).getDay()) ? 'primary' : 'gray'} onClick={() => { setSelectedExercise(exercise); start(); }}>
-                            {exercise.days.map(dayOfWeek => weekday[dayOfWeek]).join(' / ')} <Spacer x={0.5} /> <FaPlay />
+                            {exercise.days.map(dayOfWeek => t(`global_${weekday[dayOfWeek]}`)).join(' / ')} <Spacer x={0.5} /> <FaPlay />
                           </Button>
                         </Grid>
                       </>}

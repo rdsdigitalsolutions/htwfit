@@ -102,16 +102,16 @@ export default function ComponentHandler({ children, locale, providers, session,
             <NavbarLink path='/' name={t('menu_home')} hideAuthenticated={sessionStatus} type='link' />
           </Navbar.CollapseItem>
           <Navbar.CollapseItem>
-            <NavbarLink hideIn="md" path='/about' name={t('menu_about')} hideAuthenticated={sessionStatus} type='link' />
+            <NavbarLink hideIn="md" path='/about' name={t('menu_about')} type='link' />
           </Navbar.CollapseItem>
           <Navbar.CollapseItem>
             <NavbarLink path='/admin/workout' name={t('menu_admin_workout')} sessionStatus={sessionStatus} type='link' />
           </Navbar.CollapseItem>
           <Navbar.CollapseItem>
-            <NavbarLink path='/admin/planning' name={t('menu_admin_planning')} sessionStatus={sessionStatus} type='link' />
+            <NavbarLink path='/admin/meals' name={t('menu_admin_meals')} sessionStatus={sessionStatus} type='link' />
           </Navbar.CollapseItem>
           <Navbar.CollapseItem>
-            <NavbarLink path='/admin/stats' name={t('menu_admin_stats')} sessionStatus={sessionStatus} type='link' />
+            <NavbarLink path='/admin/planning' name={t('menu_admin_planning')} sessionStatus={sessionStatus} type='link' />
           </Navbar.CollapseItem>
         </Navbar.Collapse>
 

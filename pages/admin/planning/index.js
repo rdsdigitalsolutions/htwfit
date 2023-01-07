@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import moment from 'moment';
+import { v4 as uuidv4 } from 'uuid';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { unstable_getServerSession } from "next-auth/next"
@@ -7,7 +8,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useForm, Controller } from "react-hook-form";
 import { Text, Button, Spacer, Grid, Switch, Card, Avatar, Modal, Input, Progress } from '@nextui-org/react';
-import { FaPlus, FaCircle, FaExclamationTriangle, FaArrowRight } from "react-icons/fa";
+import { FaPlus, FaCircle, FaExclamationTriangle, FaArrowRight, FaGlobe } from "react-icons/fa";
 
 import { authOptions } from "./../../api/auth/[...nextauth]"
 import { findAll } from '../../../repository/plan'
@@ -21,6 +22,7 @@ import {
 import "react-circular-progressbar/dist/styles.css";
 
 import Layout from '../../../components/layout'
+import Link from 'next/link';
 
 export default function ComponentHandler({ locale, currentUserPlan, session }) {
   const { t } = useTranslation('common');
@@ -49,10 +51,40 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
     setProcessing(true);
 
     const newPlan = {
-      ...currentPlan, updatedAt: moment().format(), mensurements: [...currentPlan.mensurements, {
-        date: moment().format(),
-        ...formData
-      }]
+      ...currentPlan,
+      updatedAt: moment().format(),
+      mensurements: [
+        ...currentPlan.mensurements,
+        {
+          date: moment().format(),
+          ...formData
+        }
+      ]
+    };
+
+    DefaultFetch({
+      url: `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/v1/plan`,
+      method: 'PUT',
+      jsonBody: JSON.stringify(newPlan),
+    })
+      .then((data) => {
+        if (data.error) setStatusMessage(data.error);
+
+        if (data.modifiedCount === 0) {
+          setStatusMessage('Sorry, it was not possible to update, please contact the support.');
+          return;
+        }
+
+        setCurrentPlan(newPlan);
+      })
+      .finally(() => setProcessing(false))
+  }
+
+  const handleMakePublic = () => {
+    const newPlan = {
+      ...currentPlan,
+      updatedAt: moment().format(),
+      publicUID: currentPlan.publicUID ? null : uuidv4()
     };
 
     DefaultFetch({
@@ -109,7 +141,7 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
       strokeWidth={10}
       styles={buildStyles({
         pathColor: color,
-        trailColor: "transparent"
+        trailColor: "#000"
       })}
     >
       {children}
@@ -344,10 +376,18 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
         <Spacer y={0.5} />
 
         <Grid.Container gap={0.5} justify="center">
-          <Grid xs={4} justify="left">
-            <Text h6 color='gray'>Public</Text> <Spacer x={0.2} /> <Switch size="xs" checked={false} />
+          <Grid xs={5} justify="left">
+            <Text h6 color='gray'>Public</Text>
+            <Spacer x={0.2} />
+            <Switch size="xs" checked={!!currentPlan.publicUID} onClick={() => handleMakePublic()} />
+            {currentPlan.publicUID && <>
+              <Spacer x={0.2} />
+              <Link href={``} target='_blank'>
+                <Button auto flat size="xs" color='primary'><FaGlobe /></Button>
+              </Link>
+            </>}
           </Grid>
-          <Grid xs={5} justify="right">
+          <Grid xs={4} justify="right">
             <Button size="xs" onClick={handlerSizeModal} color='primary'> <FaPlus /> <Spacer x={0.2} /> Mensurements</Button>
           </Grid>
           <Grid xs={3} justify="right">
@@ -368,20 +408,6 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
           <Card.Body>
             <Grid.Container gap={0} justify="center">
               <Grid xs={12} justify="center">
-                <Text h6 weight="bold" color='gray'>
-                  {t(moment(currentPlan.createdAt).format('MMMM'))} {moment(currentPlan.createdAt).format('YYYY')} - {t(moment(currentPlan.createdAt).add(currentPlan.lengthInWeeks, 'w').format('MMMM'))} {moment(currentPlan.createdAt).add(currentPlan.lengthInWeeks, 'w').format('YYYY')}
-                </Text>
-              </Grid>
-              <Grid xs={12} justify="center">
-                <Progress color="primary" size="xs" value={68} />
-              </Grid>
-              <Spacer y={0.5} />
-              <Grid xs={12} justify="center">
-                <Text h6 color='gray'>
-                  63% Total Plan Complete
-                </Text>
-              </Grid>
-              <Grid xs={12} justify="center">
                 <Text h1 css={{ textAlign: 'center', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '10vw' }} weight="bold">
                   {currentPlan.goal}
                 </Text>
@@ -391,6 +417,21 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
                   {currentPlan.observations}
                 </Text>
               </Grid>
+              <Grid xs={12} justify="center">
+                <Text h6 weight="bold" color='gray'>
+                  {t(moment(currentPlan.createdAt).format('MMMM'))} {moment(currentPlan.createdAt).format('YYYY')} - {t(moment(currentPlan.createdAt).add(currentPlan.lengthInWeeks, 'w').format('MMMM'))} {moment(currentPlan.createdAt).add(currentPlan.lengthInWeeks, 'w').format('YYYY')}
+                </Text>
+              </Grid>
+              <Grid xs={12} justify="center">
+                <Progress color="primary" size="xs" value={(( Number((currentPlan.foodPlan.meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * currentPlan.foodPlan.meals.length) * 100).toFixed(0)) + currentPlan.exercises.reduce( (acc, curr) => acc + Number(((curr.done.length / (currentPlan.lengthInWeeks * curr.days.length)) * 100).toFixed(0)) , 0 ) )/(currentPlan.exercises.length +1)).toFixed(0)} />
+              </Grid>
+              <Spacer y={0.5} />
+              <Grid xs={12} justify="center">
+                <Text small color='gray'>
+                {((Number((currentPlan.foodPlan.meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * currentPlan.foodPlan.meals.length) * 100).toFixed(0)) + currentPlan.exercises.reduce( (acc, curr) => acc + Number(((curr.done.length / (currentPlan.lengthInWeeks * curr.days.length)) * 100).toFixed(0)) , 0 ))/(currentPlan.exercises.length +1)).toFixed(0)}% Total Plan Complete
+                </Text>
+              </Grid>
+              
             </Grid.Container>
           </Card.Body>
         </Card>
@@ -402,15 +443,15 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
 
             <div style={{ width: "75%" }}>
               <CircularProgressbarWithChildren
-                value={35}
-                strokeWidth={6}
+                value={(currentPlan.foodPlan.meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * currentPlan.foodPlan.meals.length) * 100).toFixed(0)}
+                strokeWidth={9}
                 styles={buildStyles({
                   pathColor: "#156dc5",
-                  trailColor: "transparent"
+                  trailColor: "#000"
                 })}
               >
 
-                {currentPlan.exercises.reduce((acc, curr) => <CircleElement width='78%' color={curr.color} total={((curr.done.length / (currentPlan.lengthInWeeks * curr.days.length)) * 100).toFixed(0)}>{acc}</CircleElement>, <Avatar
+                {currentPlan.exercises.reduce((acc, curr) => <CircleElement width='76%' color={curr.color} total={((curr.done.length / (currentPlan.lengthInWeeks * curr.days.length)) * 100).toFixed(0)}>{acc}</CircleElement>, <Avatar
                   color="primary"
                   size="xl"
                   src={`${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/${session.user.image}`}
@@ -442,7 +483,7 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
           <Card.Body>
             <Grid.Container gap={0} justify="center">
               <Grid xs={3} justify="left">
-                <FaCircle color='#156dc5' /> <Spacer x={0.5} /> <Text h6 weight="bold">85%</Text>
+                <FaCircle color='#156dc5' /> <Spacer x={0.5} /> <Text h6 weight="bold">{(currentPlan.foodPlan.meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * currentPlan.foodPlan.meals.length) * 100).toFixed(0)}%</Text>
               </Grid>
               <Grid xs={9} justify="left">
                 <Text h5 weight="bold">
@@ -506,10 +547,10 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
 export async function getServerSideProps({ req, res, locale }) {
   const translations = (await serverSideTranslations(locale, ['common']));
   const session = await unstable_getServerSession(req, res, authOptions)
-  const userPlans = await findAll({ userId: session.user.id });
+  const userPlans = (await findAll({ userId: session.user.id }) || []);
   const currentUserPlan = userPlans.find((plan) => !plan.terminatedAt);
 
-  if(!currentUserPlan) {
+  if (!currentUserPlan) {
     return {
       redirect: {
         permanent: false,
