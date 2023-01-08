@@ -8,7 +8,7 @@ import { FaUserCircle } from "react-icons/fa";
 import NavbarLink from './navbar-link'
 import CredentialsLogin from './credentials-login'
 
-export default function ComponentHandler({ children, locale, providers, session, sessionStatus }) {
+export default function ComponentHandler({ children, locale, providers, session, sessionStatus, setLoadingPage }) {
   const { t } = useTranslation('common');
   const router = useRouter();
   const { query } = router;
@@ -99,19 +99,19 @@ export default function ComponentHandler({ children, locale, providers, session,
             </Link>
           </Navbar.CollapseItem>}
           <Navbar.CollapseItem>
-            <NavbarLink path='/' name={t('menu_home')} hideAuthenticated={sessionStatus} type='link' />
+            <NavbarLink path='/' name={t('menu_home')} hideAuthenticated={sessionStatus} type='link' setLoadingPage={setLoadingPage} />
           </Navbar.CollapseItem>
           <Navbar.CollapseItem>
-            <NavbarLink hideIn="md" path='/about' name={t('menu_about')} type='link' />
+            <NavbarLink hideIn="md" path='/about' name={t('menu_about')} type='link' setLoadingPage={setLoadingPage} />
           </Navbar.CollapseItem>
           <Navbar.CollapseItem>
-            <NavbarLink path='/admin/workout' name={t('menu_admin_workout')} sessionStatus={sessionStatus} type='link' />
+            <NavbarLink path='/admin/workout' name={t('menu_admin_workout')} sessionStatus={sessionStatus} type='link' setLoadingPage={setLoadingPage} />
           </Navbar.CollapseItem>
           <Navbar.CollapseItem>
-            <NavbarLink path='/admin/meals' name={t('menu_admin_meals')} sessionStatus={sessionStatus} type='link' />
+            <NavbarLink path='/admin/meals' name={t('menu_admin_meals')} sessionStatus={sessionStatus} type='link' setLoadingPage={setLoadingPage} />
           </Navbar.CollapseItem>
           <Navbar.CollapseItem>
-            <NavbarLink path='/admin/planning' name={t('menu_admin_planning')} sessionStatus={sessionStatus} type='link' />
+            <NavbarLink path='/admin/planning' name={t('menu_admin_planning')} sessionStatus={sessionStatus} type='link' setLoadingPage={setLoadingPage} />
           </Navbar.CollapseItem>
         </Navbar.Collapse>
 
