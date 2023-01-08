@@ -5,6 +5,9 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 import { findOne } from '../../../repository/user'
 
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 export const authOptions = {
     providers: [
         GithubProvider({
@@ -29,14 +32,21 @@ export const authOptions = {
                 password: { label: "Password", type: "password" }
             },
             async authorize(credentials, req) {
-                console.log('credentials:', credentials)
-
                 if (!credentials.username || !credentials.password) {
                     return null;
                 }
 
-                const user = await findOne( { email: credentials.username, password: credentials.password } );
-                return user || null;
+                // const hash = bcrypt.hashSync(credentials.password, saltRounds);
+                // console.log('hash:', hash);
+
+                const user = await findOne( { email: credentials.username } );
+                const validPass = await bcrypt.compareSync(credentials.password, user.password);
+
+                if ( validPass ) {
+                    return user;
+                }
+
+                return null;
             }
         })
     ],

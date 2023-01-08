@@ -1,6 +1,6 @@
 import { getCollection, closeConnection, migrateUser } from '../lib/mongodb'
 
-export async function findOne({ id, email, password }) {
+export async function findOne({ id, email }) {
     let result;
 
     try {
@@ -12,7 +12,7 @@ export async function findOne({ id, email, password }) {
             if(!testMigration) await migrateUser(collection);
         }
 
-        result = await collection.findOne( id ? { id } : {email, password});
+        result = await collection.findOne( id ? { id } : {email});
         await closeConnection();
     } catch (e) {
         console.log(e);
