@@ -7,7 +7,9 @@ const lightTheme = createTheme({
   type: 'light',
   theme: {
     colors: {
-      inactive: '#787f85'
+      inactive: '#787f85',
+      bright: '#000',
+      dark: '#fff',
     },
   }
 })
@@ -16,14 +18,16 @@ const darkTheme = createTheme({
   type: 'dark',
   theme: {
     colors: {
-      inactive: '#787f85'
+      inactive: '#787f85',
+      bright: '#fff',
+      dark: '#000',
     },
   }
 })
 
 function App({ Component, pageProps }) {
   return <NextThemesProvider
-    defaultTheme="system"
+    defaultTheme="dark" //system
     attribute="class"
     value={{
       light: lightTheme.className,

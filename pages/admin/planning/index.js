@@ -9,6 +9,7 @@ import { useTranslation } from 'next-i18next'
 import { useForm, Controller } from "react-hook-form";
 import { Text, Button, Spacer, Grid, Switch, Card, Avatar, Modal, Input, Progress } from '@nextui-org/react';
 import { FaPlus, FaCircle, FaExclamationTriangle, FaArrowRight, FaGlobe } from "react-icons/fa";
+import { useTheme } from '@nextui-org/react';
 
 import { authOptions } from "./../../api/auth/[...nextauth]"
 import { findAll } from '../../../repository/plan'
@@ -26,6 +27,7 @@ import Link from 'next/link';
 
 export default function ComponentHandler({ locale, currentUserPlan, session }) {
   const { t } = useTranslation('common');
+  const { isDark } = useTheme();
   const router = useRouter();
 
   const [statusMessage, setStatusMessage] = useState('');
@@ -141,7 +143,7 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
       strokeWidth={10}
       styles={buildStyles({
         pathColor: color,
-        trailColor: "#000"
+        trailColor: isDark ? '#181818' : '#ececec',
       })}
     >
       {children}
@@ -447,7 +449,7 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
                 strokeWidth={9}
                 styles={buildStyles({
                   pathColor: "#156dc5",
-                  trailColor: "#000"
+                  trailColor: isDark ? '#181818' : '#ececec',
                 })}
               >
 

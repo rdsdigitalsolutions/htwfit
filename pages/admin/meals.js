@@ -5,6 +5,7 @@ import { unstable_getServerSession } from "next-auth/next"
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { Text, Grid, Button, Card, Progress, Badge, Spacer } from '@nextui-org/react';
+import { useTheme } from '@nextui-org/react';
 // import { FaPlay, FaAngleDoubleLeft, FaAngleDoubleRight, FaAward, FaSearch, FaCheck, FaGoogle, FaYoutube } from "react-icons/fa";
 // import { render } from "react-dom";
 
@@ -23,6 +24,7 @@ import DefaultFetch from '../../lib/default-fetch'
 
 export default function ComponentHandler({ locale, currentUserPlan }) {
   const { t } = useTranslation('common');
+  const { isDark } = useTheme();
 
   const [processing, setProcessing] = useState(false);
   const [statusMessage, setStatusMessage] = useState(null);
@@ -59,7 +61,7 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
 
         setCurrentPlan(newPlan);
       })
-      .catch( (exception) => setStatusMessage(exception.message) )
+      .catch((exception) => setStatusMessage(exception.message))
       .finally(() => setProcessing(false))
   }
 
@@ -112,10 +114,10 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
                             text={`${(meal.done.length / (currentPlan.lengthInWeeks * 7) * 100).toFixed(0)}%`}
                             strokeWidth={15}
                             styles={buildStyles({
-                              backgroundColor: "#3e98c7",
-                              textColor: "#fff",
+                              backgroundColor: '#3e98c7',
+                              textColor: isDark ? '#fff' : '#000',
                               pathColor: "#2abe0c",
-                              trailColor: "#000",
+                              trailColor: isDark ? '#3e98c7' : '#c6c6c6',
                               textSize: "25px"
                             })}
                           />
@@ -149,7 +151,7 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
                   </Grid>
                   <Spacer y={0.8} />
                   {!meal.done.find((doneDate) => moment(doneDate).format('DD/MM/YYYY') === moment().format('DD/MM/YYYY')) && <Grid xs={12} justify="center">
-                    <Button auto size='xs' color={parseFloat(moment().format('H:MM')) > parseFloat(meal.time) ? 'warning' : 'primary'} onClick={() => handleMealDone(index)}>{t('global_done_today')}</Button>
+                    <Button auto size='sm' color={parseFloat(moment().format('H:MM')) > parseFloat(meal.time) ? 'warning' : 'primary'} onClick={() => handleMealDone(index)}>{t('global_done_today')}</Button>
                   </Grid>}
                 </Grid.Container>
               </Card.Body>

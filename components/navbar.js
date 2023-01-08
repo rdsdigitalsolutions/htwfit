@@ -41,7 +41,7 @@ export default function ComponentHandler({ children, locale, providers, session,
 
       <Navbar isCompact isBordered variant="static" maxWidth="fluid">
         <Navbar.Brand>
-          <Navbar.Toggle aria-label="toggle navigation" showIn="xs" />
+          <Navbar.Toggle size='lg' aria-label="toggle navigation" showIn="xs" />
           <Spacer x={5} />
           <Text b color="inherit">
             {process.env.NEXT_PUBLIC_APP_URL} <Badge color="warning" size="xs" variant="flat" isSquared>{t('global_beta')}</Badge>
@@ -92,7 +92,7 @@ export default function ComponentHandler({ children, locale, providers, session,
 
         </Navbar.Content>
 
-        <Navbar.Collapse showIn="xs" disableAnimation css={{background: '#000'}}>
+        <Navbar.Collapse showIn="xs" disableAnimation css={{background: '$dark'}}>
           {sessionStatus !== 'authenticated' && <Navbar.CollapseItem>
             <Link color="inherit" css={{ minWidth: "100%" }} onClick={() => setLoginModalVisible(true)}>
               {t('global_login')}

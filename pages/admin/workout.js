@@ -8,6 +8,7 @@ import { Text, Grid, Card, Button, Progress, Spacer, Input, Link, Badge } from '
 import { FaPlay, FaAngleDoubleLeft, FaAngleDoubleRight, FaAward, FaSearch, FaCheck, FaGoogle, FaYoutube } from "react-icons/fa";
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import { useStopwatch } from 'react-timer-hook';
+import { useTheme } from '@nextui-org/react';
 
 import {
   CircularProgressbar,
@@ -24,6 +25,8 @@ import styles from '../../styles/Home.module.css'
 
 export default function ComponentHandler({ locale, initialActivePlan }) {
   const { t } = useTranslation('common');
+  const { isDark } = useTheme();
+
   const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   const [processing, setProcessing] = useState(false);
@@ -121,7 +124,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
       })
         .then((data) => {
           if (data.error) setStatusMessage(data.error);
-          
+
           pause();
           setCurrentPlans(newCurrentPlans);
           setIsDone(true);
@@ -175,6 +178,14 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
               {isDone && <>
                 <Grid.Container>
                   <Grid xs={12} justify="center">
+                    <Button auto bordered size="sm" color='primary' onClick={() => handleCancellRoutine()}>
+                      {t('global_return_exercises')}
+                    </Button>
+                  </Grid>
+
+                  <Spacer y={0.5} />
+
+                  <Grid xs={12} justify="center">
                     <Card>
                       <Card.Body>
                         <Grid.Container>
@@ -192,9 +203,9 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                                         strokeWidth={15}
                                         styles={buildStyles({
                                           backgroundColor: "#3e98c7",
-                                          textColor: "#fff",
+                                          textColor: isDark ? '#fff' : '#000',
                                           pathColor: "#2abe0c",
-                                          trailColor: "#000",
+                                          trailColor: isDark ? '#3e98c7' : '#c6c6c6',
                                           textSize: "22px"
                                         })}
                                       />
@@ -249,7 +260,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                               <Card.Body>
                                 <Grid.Container>
                                   <Grid xs={12} justify="center">
-                                    <Spacer y={14} />
+                                    <Spacer y={8} />
                                   </Grid>
                                 </Grid.Container>
                               </Card.Body>
@@ -264,13 +275,6 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                         </Grid.Container>
                       </Card.Body>
                     </Card>
-                  </Grid>
-
-                  <Spacer y={1} />
-                  <Grid xs={12} justify="center">
-                    <Button auto bordered size="sm" color='primary' onClick={() => handleCancellRoutine()}>
-                      {t('global_return_exercises')}
-                    </Button>
                   </Grid>
                 </Grid.Container>
               </>}
@@ -303,11 +307,11 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                     </Grid>
                     <Grid xs={12} justify="center">
                       <Link href={`https://www.google.com/search?tbm=isch&q=${currentTrainning.title}`} target='_blank'>
-                        <Button auto size='xs' bordered color='primary'><FaGoogle /></Button>
+                        <Button auto size='sm' bordered color='primary'><FaGoogle /></Button>
                       </Link>
                       <Spacer x={0.5} />
                       <Link href={`http://www.youtube.com/results?search_query=${currentTrainning.title}`} target='_blank'>
-                        <Button auto size='xs' bordered color='primary'><FaYoutube /></Button>
+                        <Button auto size='sm' bordered color='primary'><FaYoutube /></Button>
                       </Link>
                     </Grid>
                   </Grid.Container>
@@ -399,8 +403,8 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                         fullWidth={true}
                         type="text"
                         bordered
-                        initialValue={weightChange}
-                        value={weightChange}
+                        initialValue={weightChange || 0}
+                        value={weightChange || 0}
                         label={t('global_adjust_weight')}
                         onChange={(e) => setWeightChange(parseFloat(e.target.value))}
                       />

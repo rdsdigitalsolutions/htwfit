@@ -129,7 +129,8 @@
 }
 
 .blob {
-  background: rgb(78, 78, 78);
+  background: #ececec;
+  color: rgb(89, 89, 89);
   box-shadow: 0 0 0 0 rgb(19, 19, 19);
   border-radius: 50%;
   margin: 10px;
