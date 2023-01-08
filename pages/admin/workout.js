@@ -11,7 +11,6 @@ import { useStopwatch } from 'react-timer-hook';
 
 import {
   CircularProgressbar,
-  CircularProgressbarWithChildren,
   buildStyles
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -69,6 +68,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
   }
 
   const handleCurrentTrainning = ({ skip = false }) => {
+    setProcessing(true);
     handleReset();
 
     if (trainnings.length) {
@@ -86,6 +86,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
   }
 
   const handleCancellRoutine = () => {
+    setProcessing(true);
     handleReset();
     setSelectedExercise(null);
     setTrainnings([]);
@@ -94,6 +95,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
   }
 
   const handleTrainningConclusion = () => {
+    setProcessing(true);
     handleCurrentTrainning({});
 
     if (getLatestWeight(currentTrainning) !== weightChange) {
@@ -112,8 +114,6 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
       newCurrentPlans.exercises = newCurrentPlans.exercises.map((exercise) => exercise.id === newSelectedExercise.id ? newSelectedExercise : exercise);
       newCurrentPlans.updatedAt = (new Date()).toISOString();
 
-      setProcessing(true);
-
       DefaultFetch({
         url: `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/v1/plan`,
         method: 'PUT',
@@ -121,9 +121,10 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
       })
         .then((data) => {
           if (data.error) setStatusMessage(data.error);
+          
+          pause();
           setCurrentPlans(newCurrentPlans);
           setIsDone(true);
-          pause();
         })
         .catch((e) => console.log(e.message))
         .finally(() => setProcessing(false))
@@ -138,7 +139,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Layout locale={locale} restricted={true}>
+      <Layout locale={locale} restricted={true} loading={processing}>
 
         {processing && <>
           <Spacer y={12} />
@@ -347,15 +348,15 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                     </Grid>}
 
                     {seconds < 10 && minutes === 0 && hours === 0 && <>
-                      <Spacer y={4} />
                       <Card variant="bordered">
+                        <Spacer y={2} />
                         <Grid xs={12} justify="center">
-                          <Text h5 css={{ textAlign: 'center' }} color='warning'>
+                          <Text h3 css={{ textAlign: 'center' }} color='warning'>
                             {t('global_execute_instruction')}.
                           </Text>
                         </Grid>
+                        <Spacer y={2} />
                       </Card>
-                      <Spacer y={4} />
                     </>}
 
                     <Spacer y={1} />

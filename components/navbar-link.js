@@ -10,7 +10,7 @@ export default function ComponentHandler({ sessionStatus, path, name, hideAuthen
     router.push(path);
   }
 
-  const element = type === 'navbar' ? <Navbar.Link onClick={handleClick} hideIn={hideIn} isActive={isActive} >{name}</Navbar.Link> : <Link onClick={handleClick}>{name}</Link>;
+  const element = type === 'navbar' ? <Navbar.Link onClick={handleClick} hideIn={hideIn} isActive={isActive} color="secondary">{name}</Navbar.Link> : <Link onClick={handleClick} color="primary">{name}</Link>;
 
   if (hideAuthenticated === 'authenticated') {
     return null;

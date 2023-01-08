@@ -40,7 +40,7 @@
     "global_initial_weight": "Initial weight",
     "global_cancell_routine": "Cancell Routine",
     "global_skip": "Skip for now",
-    "global_execute_instruction": "Please execute the first repetition. Once done, start the resting stopwatch",
+    "global_execute_instruction": "Please execute the first repetition, once done, start the resting stopwatch",
     "global_congrats_exercise_done": "Congratulations, exercise done",
     "global_adjust_weight": "Adjust the weight for the next session",
     "global_start_next": "Start Next",

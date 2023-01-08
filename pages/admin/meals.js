@@ -10,7 +10,6 @@ import { Text, Grid, Button, Card, Progress, Badge, Spacer } from '@nextui-org/r
 
 import {
   CircularProgressbar,
-  CircularProgressbarWithChildren,
   buildStyles
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -31,6 +30,7 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
   const [currentPlan, setCurrentPlan] = useState(currentUserPlan);
 
   const handleMealDone = mealIndex => {
+    setProcessing(true)
     const newMeals = [...currentPlan.foodPlan.meals];
 
     newMeals[mealIndex].done.push(moment().format());
@@ -71,7 +71,7 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Layout locale={locale} restricted={true}>
+      <Layout locale={locale} restricted={true} loading={processing}>
         <Grid.Container gap={0.5} justify="center">
           <Grid xs={12} justify="center">
             <Text h1 css={{ textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '7vw' }} weight="bold">

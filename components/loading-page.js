@@ -7,7 +7,7 @@ export default function ComponentHandler({ children, text = 'Loading' }) {
   return (
     <Grid.Container gap={4} justify="center">
       <Grid xs={12} justify="center">
-        <Loading color="primary" textColor="primary">
+        <Loading color="primary" textColor="primary" size="lg">
           {t(text)}
         </Loading>
       </Grid>
