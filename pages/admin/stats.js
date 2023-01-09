@@ -17,7 +17,7 @@ export default function ComponentHandler({ locale }) {
       </Head>
 
       <Layout locale={locale} restricted={true}>
-        <Text h1 css={{ textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '7vw' }} weight="bold">
+        <Text h1 css={{ textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '7vw', lineHeight: 'normal' }} weight="bold">
           {t('dashboard_title')}
         </Text>
         <Text >{t('global_test')}</Text>

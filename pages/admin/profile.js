@@ -143,7 +143,7 @@ export default function ComponentHandler({ locale, session }) {
                       />
                     </Grid>
                     <Grid xs={12} justify="center">
-                      <Text h1 css={{ textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '4vw' }} weight="bold">{t('account_title')}</Text>
+                      <Text h1 css={{ textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '4vw', lineHeight: 'normal' }} weight="bold">{t('account_title')}</Text>
                     </Grid>
                   </Grid.Container>
                 </Card.Header>

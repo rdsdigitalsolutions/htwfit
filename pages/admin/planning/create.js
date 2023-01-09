@@ -107,7 +107,7 @@ export default function ComponentHandler({ locale, userPlans }) {
 
       <Layout locale={locale} restricted={true}>
 
-        <Text h1 css={{ textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '8vw' }} weight="bold">
+        <Text h1 css={{ textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '8vw', lineHeight: 'normal' }} weight="bold">
           {t('planning_add_new')}
         </Text>
 

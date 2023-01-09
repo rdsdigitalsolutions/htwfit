@@ -37,7 +37,7 @@ export default function ComponentHandler({ locale, userPlans }) {
 
         {/* <Grid.Container gap={0.5} justify="center">
           <Grid xs={12} justify="center">
-            <Text h1 css={{ textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '8vw' }} weight="bold">
+            <Text h1 css={{ textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '8vw', lineHeight: 'normal' }} weight="bold">
               {t('My Plans')}
             </Text>
           </Grid>
@@ -51,7 +51,7 @@ export default function ComponentHandler({ locale, userPlans }) {
               <Card.Body>
                 <Grid.Container gap={0} justify="center">
                   <Grid xs={12} justify="center">
-                    <Text h1 css={{ textAlign: 'center', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '6vw' }}>
+                    <Text h1 css={{ textAlign: 'center', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '6vw', lineHeight: 'normal' }}>
                       {currentPlan.goal}
                     </Text>
                   </Grid>
@@ -93,7 +93,7 @@ export default function ComponentHandler({ locale, userPlans }) {
 export async function getServerSideProps({ req, res, locale }) {
   const translations = (await serverSideTranslations(locale, ['common']));
   const session = await unstable_getServerSession(req, res, authOptions)
-  const userPlans = await findAll({ userId: session.user.id });
+  const userPlans = await findAll({ userId: session.user.id }) || [];
   const currentUserPlan = userPlans.find((plan) => !plan.terminatedAt);
 
   if (currentUserPlan) {

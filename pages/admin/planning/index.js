@@ -7,8 +7,8 @@ import { unstable_getServerSession } from "next-auth/next"
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useForm, Controller } from "react-hook-form";
-import { Text, Button, Spacer, Grid, Switch, Card, Avatar, Modal, Input, Progress } from '@nextui-org/react';
-import { FaPlus, FaCircle, FaExclamationTriangle, FaArrowRight, FaGlobe } from "react-icons/fa";
+import { Text, Button, Spacer, Grid, Switch, Card, Avatar, Badge, Input, Progress } from '@nextui-org/react';
+import { FaCircle, FaExclamationTriangle, FaArrowRight, FaGlobe } from "react-icons/fa";
 import { useTheme } from '@nextui-org/react';
 
 import { authOptions } from "./../../api/auth/[...nextauth]"
@@ -397,7 +397,7 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
           </Grid>
         </Grid.Container>
 
-        <Spacer y={0.3} />
+        <Spacer y={0.8} />
 
         {statusMessage && <Grid.Container gap={0} justify="center">
           <Grid xs={12} justify="center">
@@ -406,37 +406,39 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
         </Grid.Container>
         }
 
-        <Card>
-          <Card.Body>
-            <Grid.Container gap={0} justify="center">
-              <Grid xs={12} justify="center">
-                <Text h1 css={{ textAlign: 'center', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '10vw' }} weight="bold">
-                  {currentPlan.goal}
-                </Text>
-              </Grid>
-              <Grid xs={12} justify="center">
-                <Text h6 css={{ textAlign: 'center' }}>
-                  {currentPlan.observations}
-                </Text>
-              </Grid>
-              <Grid xs={12} justify="center">
-                <Text h6 weight="bold" color='gray'>
-                  {t(moment(currentPlan.createdAt).format('MMMM'))} {moment(currentPlan.createdAt).format('YYYY')} - {t(moment(currentPlan.createdAt).add(currentPlan.lengthInWeeks, 'w').format('MMMM'))} {moment(currentPlan.createdAt).add(currentPlan.lengthInWeeks, 'w').format('YYYY')}
-                </Text>
-              </Grid>
-              <Grid xs={12} justify="center">
-                <Progress color="primary" size="xs" value={(( Number((currentPlan.foodPlan.meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * currentPlan.foodPlan.meals.length) * 100).toFixed(0)) + currentPlan.exercises.reduce( (acc, curr) => acc + Number(((curr.done.length / (currentPlan.lengthInWeeks * curr.days.length)) * 100).toFixed(0)) , 0 ) )/(currentPlan.exercises.length +1)).toFixed(0)} />
-              </Grid>
-              <Spacer y={0.5} />
-              <Grid xs={12} justify="center">
-                <Text small color='gray'>
-                {((Number((currentPlan.foodPlan.meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * currentPlan.foodPlan.meals.length) * 100).toFixed(0)) + currentPlan.exercises.reduce( (acc, curr) => acc + Number(((curr.done.length / (currentPlan.lengthInWeeks * curr.days.length)) * 100).toFixed(0)) , 0 ))/(currentPlan.exercises.length +1)).toFixed(0)}% Total Plan Complete
-                </Text>
-              </Grid>
-              
-            </Grid.Container>
-          </Card.Body>
-        </Card>
+        <Badge disableOutline isSquared content={`${currentPlan.lengthInWeeks} ${t('global_weeks')}`} size="sm" placement="top-right" variant="bordered" horizontalOffset="5%" verticalOffset="-5%" color='primary'>
+          <Card>
+            <Card.Body>
+              <Grid.Container gap={0} justify="center">
+                <Grid xs={12} justify="center">
+                  <Text h1 css={{ textAlign: 'center', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '8vw', lineHeight: 'normal' }} weight="bold">
+                    {currentPlan.goal}
+                  </Text>
+                </Grid>
+                <Grid xs={12} justify="center">
+                  <Text h6 css={{ textAlign: 'center' }}>
+                    {currentPlan.observations}
+                  </Text>
+                </Grid>
+                {/* <Grid xs={12} justify="center">
+                  <Text h6 weight="bold" color='gray'>
+                    {t(moment(currentPlan.createdAt).format('MMMM'))} {moment(currentPlan.createdAt).format('YYYY')} - {t(moment(currentPlan.createdAt).add(currentPlan.lengthInWeeks, 'w').format('MMMM'))} {moment(currentPlan.createdAt).add(currentPlan.lengthInWeeks, 'w').format('YYYY')}
+                  </Text>
+                </Grid> */}
+                <Grid xs={12} justify="center">
+                  <Progress color="primary" size="xs" value={((Number((currentPlan.foodPlan.meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * currentPlan.foodPlan.meals.length) * 100).toFixed(0)) + currentPlan.exercises.reduce((acc, curr) => acc + Number(((curr.done.length / (currentPlan.lengthInWeeks * curr.days.length)) * 100).toFixed(0)), 0)) / (currentPlan.exercises.length + 1)).toFixed(0)} />
+                </Grid>
+                <Spacer y={0.5} />
+                <Grid xs={12} justify="center">
+                  <Text small color='gray'>
+                    {((Number((currentPlan.foodPlan.meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * currentPlan.foodPlan.meals.length) * 100).toFixed(0)) + currentPlan.exercises.reduce((acc, curr) => acc + Number(((curr.done.length / (currentPlan.lengthInWeeks * curr.days.length)) * 100).toFixed(0)), 0)) / (currentPlan.exercises.length + 1)).toFixed(0)}% Total Plan Complete
+                  </Text>
+                </Grid>
+
+              </Grid.Container>
+            </Card.Body>
+          </Card>
+        </Badge>
 
         <Spacer y={1} />
 
@@ -474,7 +476,7 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
             </Text>
             <Spacer x={0.5} />
             <Text h6 weight="bold" color='secondary'>
-              {(currentPlan.exercises.reduce((acc, curr) => acc + (curr.done.reduce((subAcc, subCurr) => subAcc + subCurr.duration, 0) / curr.done.length), 0) / currentPlan.exercises.length).toFixed(0)} min.
+              {(currentPlan.exercises.reduce((acc, curr) => acc + (curr.done.reduce((subAcc, subCurr) => subAcc + (subCurr.duration||0), 0) / (curr.done.length||1)), 0) / (currentPlan.exercises.length||1)).toFixed(0)} min.
             </Text>
           </Grid>
         </Grid.Container>

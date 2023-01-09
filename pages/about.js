@@ -19,7 +19,7 @@ export default function ComponentHandler({ locale, providers }) {
       </Head>
 
       <Layout locale={locale} providers={providers}>
-          <Text h1 css={{ textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '7vw' }} weight="bold">{t('about_title')}</Text>
+          <Text h1 css={{ textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '7vw', lineHeight: 'normal' }} weight="bold">{t('about_title')}</Text>
           <Text h6>{t('global_test')}</Text>
       </Layout>
     </>

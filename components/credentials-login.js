@@ -79,11 +79,11 @@ export default function ComponentHandler({ visible, setVisible, providers, local
       </Modal.Header>
 
       <Modal.Body>
-        {providers && <Grid.Container gap={1}>
+        {/* {providers && <Grid.Container gap={1}>
           {Object.values(providers).filter((provider) => provider.name !== 'Credentials').map((provider, index) => <Grid key={index} xs={12} justify="center">
             <Button bordered onClick={handleSocialLogin} value={provider.id}>{t('global_sign_in_with')} {provider.name}</Button>
           </Grid>)}
-        </Grid.Container>}
+        </Grid.Container>} */}
 
         <Grid.Container gap={4}>
           <Grid xs={12} justify="center">
@@ -116,22 +116,22 @@ export default function ComponentHandler({ visible, setVisible, providers, local
               disabled={processing}
             />
           </Grid>
-          <Grid xs={12} justify="center">
+          {/* <Grid xs={12} justify="center">
             <Row justify="space-between">
               <Checkbox>
                 <Text size={14}>{t('global_remember_me')}</Text>
               </Checkbox>
               <Text size={14}>{t('global_forgot_password')}?</Text>
             </Row>
-          </Grid>
+          </Grid> */}
           {error && <Grid xs={12} justify="center">
             <Text h6 color="error">{error}</Text>
           </Grid>}
         </Grid.Container>
       </Modal.Body>
       <Modal.Footer justify="center">
-        {!processing ? <Button auto flat color="error" onClick={() => setVisible(false)}>{t('global_close')}</Button> : null}
-        <Button auto flat onClick={handleForm} disabled={processing}>
+        {/* {!processing ? <Button auto flat color="error" onClick={() => setVisible(false)}>{t('global_close')}</Button> : null} */}
+        <Button auto shadow onClick={handleForm} disabled={processing}>
           {processing ? <Loading type="points" color="currentColor" size="sm" /> : <>{t('global_login')} <FaChevronRight /></>}
         </Button>
       </Modal.Footer>

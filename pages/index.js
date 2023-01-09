@@ -3,10 +3,9 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { getProviders } from "next-auth/react"
 
-import { Text } from '@nextui-org/react';
+import { Text, Spacer } from '@nextui-org/react';
 
 import Layout from '../components/layout'
-import styles from '../styles/Home.module.css'
 
 export default function ComponentHandler({ locale, providers }) {
   const { t } = useTranslation('common');
@@ -20,15 +19,12 @@ export default function ComponentHandler({ locale, providers }) {
       </Head>
 
       <Layout locale={locale} providers={providers}>
-        <Text h1 css={{ textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '7vw' }} weight="bold">
+        <Spacer y={3} />
+        <Text h1 css={{ textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '7vw', lineHeight: 'normal' }} weight="bold">
           {process.env.NEXT_PUBLIC_APP_NAME}
         </Text>
 
-        <Text h6>{t('global_test')}</Text>
-        <p className={styles.description}>
-          {t('index_instruction')}{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+        <Text h6>{t('global_homepage')}</Text>
       </Layout>
     </>
   )

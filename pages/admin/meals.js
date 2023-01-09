@@ -19,6 +19,7 @@ import Layout from '../../components/layout'
 import { authOptions } from "./../api/auth/[...nextauth]"
 import { findAll } from '../../repository/plan'
 import DefaultFetch from '../../lib/default-fetch'
+import { FaCheckSquare, FaSquare } from 'react-icons/fa';
 
 export default function ComponentHandler({ locale, currentUserPlan }) {
   const { t } = useTranslation('common');
@@ -64,7 +65,7 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
   }
 
   const meals = currentPlan.foodPlan.meals.map((meal) => {
-    
+
     return {
       ...meal,
       doneToday: meal.done.find((doneDate) => moment(doneDate).format('DD/MM/YYYY') === moment().format('DD/MM/YYYY')),
@@ -82,7 +83,7 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
       <Layout locale={locale} restricted={true} loading={processing}>
         <Grid.Container gap={0.5} justify="center">
           <Grid xs={12} justify="center">
-            <Text h1 css={{ textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '7vw' }} weight="bold">
+            <Text h1 css={{ textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '7vw', lineHeight: 'normal' }} weight="bold">
               {t('global_my_meals')}
             </Text>
           </Grid>
@@ -132,7 +133,7 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
                       <Spacer y={0.2} />
                       <Grid xs={12} justify="center">
                         <Text small color='gray'>
-                        {t('global_done')} {meal.done.length} {t('global_of')} {(currentPlan.lengthInWeeks * 7)}
+                          {t('global_done')} {meal.done.length} {t('global_of')} {(currentPlan.lengthInWeeks * 7)}
                         </Text>
                       </Grid>
                     </Grid.Container>
@@ -140,7 +141,7 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
                   <Grid xs={8} justify="left">
                     <Grid.Container gap={0}>
                       <Grid xs={12} justify="left">
-                        <Text h1 css={{ textAlign: 'left', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '4.5vw' }} weight="bold">
+                        <Text h1 css={{ textAlign: 'left', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '4.5vw', lineHeight: 'normal' }} weight="bold">
                           {meal.title}
                         </Text>
                       </Grid>
@@ -149,17 +150,22 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
                           {meal.ingredients}
                         </Text>
                       </Grid>
+                      <Grid xs={12} justify="left">
+                        <Text h6 css={{ textAlign: 'left', fontSize: '3.5vw' }}>
+                          <Text small css={{ textAlign: 'center', }} color='gray'> {meal.suggestion} </Text>
+                        </Text>
+                      </Grid>
                     </Grid.Container>
-                  </Grid>
-                  <Spacer y={0.5} />
-                  <Grid xs={12} justify="center">
-                    <Text small css={{ textAlign: 'center', }} color='gray'> {meal.suggestion} </Text>
                   </Grid>
                   <Spacer y={0.8} />
                   <Grid xs={12} justify="center">
                     {!meal.doneToday && <>
                       <Button auto shadow size='sm' color={parseFloat(moment().format('H:MM')) > parseFloat(meal.time) ? 'warning' : 'primary'} onClick={() => handleMealDone(index)}>{t('global_done_today')}</Button>
                     </>}
+
+                    {/* {meal.doneToday && <>
+                      <Text small color='success'>{t('global_done')}</Text>
+                    </>} */}
                   </Grid>
                 </Grid.Container>
               </Card.Body>

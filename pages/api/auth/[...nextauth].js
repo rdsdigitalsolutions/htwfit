@@ -37,16 +37,12 @@ export const authOptions = {
                 }
 
                 // const hash = bcrypt.hashSync(credentials.password, saltRounds);
-                // console.log('hash:', hash);
+                // console.log('Password hashed:', hash);
 
                 const user = await findOne( { email: credentials.username } );
-                const validPass = await bcrypt.compareSync(credentials.password, user.password);
+                const validPass = bcrypt.compareSync(credentials.password, user.password);
 
-                if ( validPass ) {
-                    return user;
-                }
-
-                return null;
+                return validPass ? user : null;
             }
         })
     ],

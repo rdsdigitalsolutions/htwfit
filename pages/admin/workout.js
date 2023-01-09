@@ -226,7 +226,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                                     </Text>
                                   </Grid>
                                   <Grid xs={12} justify="center">
-                                    <Text h1 css={{ textAlign: 'center', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '13vw' }} weight="bold">
+                                    <Text h1 css={{ textAlign: 'center', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '13vw', lineHeight: 'normal' }} weight="bold">
                                       DONE!
                                     </Text>
                                   </Grid>
@@ -283,7 +283,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                 <Card.Body>
                   <Grid.Container>
                     <Grid xs={12} justify="center">
-                      <Text h1 css={{ textAlign: 'center', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '6vw' }} weight="bold">
+                      <Text h1 css={{ textAlign: 'center', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '6vw', lineHeight: 'normal' }} weight="bold">
                         Well Done, routine finished!
                       </Text>
                     </Grid>
@@ -296,7 +296,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                 <Card.Header>
                   <Grid.Container>
                     <Grid xs={12} justify="center">
-                      <Text h1 css={{ textAlign: 'center', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '6vw' }} weight="bold">
+                      <Text h1 css={{ textAlign: 'center', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '6vw', lineHeight: 'normal' }} weight="bold">
                         {currentTrainning.title}
                       </Text>
                     </Grid>
@@ -459,10 +459,10 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
 
 
           {!selectedExercise && <>
-
+            <Spacer y={1} />
             <Grid.Container gap={0} justify="center">
               <Grid xs={12} justify="center">
-                <Text h4 css={{ textAlign: 'center', textGradient: "45deg, $blue600 -20%, $pink600 50%" }}>
+                <Text h4 css={{ textAlign: 'center', textGradient: "45deg, $blue600 -20%, $pink600 50%", lineHeight: 'normal' }}>
                   {currentPlans.goal}
                 </Text>
               </Grid>
@@ -474,16 +474,88 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
               </Grid>
             </Grid.Container>
 
-            <Grid.Container gap={0.8} justify="center">
-              {(currentPlans.exercises || []).map((exercise, index) => <Grid xs={12} key={index}>
+            <Spacer y={1} />
+            {(currentPlans.exercises || []).map((exercise, index) => <>
 
+              <Badge key={index} disableOutline isSquared content={`${(exercise.done.reduce((acc, curr) => acc + (curr.duration||0), 0) / (exercise.done.length || 1)).toFixed(0)}min ${t('global_duration')} `} size="sm" placement="top-right" variant="bordered" horizontalOffset="10%" verticalOffset="-5%" color='primary'>
+                <Card>
+                  <Card.Body>
+                    <Grid.Container>
+                      <Grid xs={4} justify="center">
+                        <Grid.Container>
+                          <Grid xs={12} justify="center">
+                            <div style={{ width: "80%" }}>
+                              <CircularProgressbar
+                                value={(exercise.done.length / (currentPlans.lengthInWeeks * exercise.days.length) * 100).toFixed(0)}
+                                text={`${(exercise.done.length / (currentPlans.lengthInWeeks * exercise.days.length) * 100).toFixed(0)}%`}
+                                strokeWidth={15}
+                                styles={buildStyles({
+                                  backgroundColor: '#3e98c7',
+                                  textColor: isDark ? '#c6c6c6' : '#000',
+                                  pathColor: "#2abe0c",
+                                  trailColor: isDark ? '#000' : '#f3f3f4',
+                                  textSize: "25px"
+                                })}
+                              />
+                            </div>
+                          </Grid>
+                          <Spacer y={0.2} />
+                          <Grid xs={12} justify="center">
+                            <Text small color='gray'>
+                              {t('global_done')} {exercise.done.length} {t('global_of')} {(currentPlans.lengthInWeeks * exercise.days.length)}
+                            </Text>
+                          </Grid>
+                        </Grid.Container>
+                      </Grid>
+                      <Grid xs={8} justify="left">
+                        <Grid.Container gap={0}>
+                          <Grid xs={12} justify="left">
+                            <Text h1 css={{ textAlign: 'left', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '4.5vw', lineHeight: 'normal' }} weight="bold">
+                              {exercise.title}
+                            </Text>
+                          </Grid>
+                          <Grid xs={12} justify="left">
+                            <Text small color='gray'>
+                              {t('global_exercises_to_complete').replace('**', exercise.training.length)}
+                            </Text>
+                          </Grid>
+                          <Spacer y={0.2} />
+                          <Grid xs={12} justify="left">
+                            <Text h6 css={{ textAlign: 'left', fontSize: '3.5vw' }}>
+                              {exercise.observations}
+                            </Text>
+                          </Grid>
+                        </Grid.Container>
+                      </Grid>
+                      <Spacer y={0.8} />
+                      {exercise.done.length < (currentPlans.lengthInWeeks * exercise.days.length) && <>
+                        <Grid xs={12} justify="center">
+                          <Button auto type="submit" color={exercise.days.find(dayOfWeek => dayOfWeek === (new Date()).getDay()) ? 'primary' : 'gray'} onClick={() => { setSelectedExercise(exercise); start(); }}>
+                            {exercise.days.map(dayOfWeek => t(`global_${weekday[dayOfWeek]}`)).join(' / ')} <Spacer x={0.5} /> <FaPlay />
+                          </Button>
+                        </Grid>
+                      </>}
+                    </Grid.Container>
+                  </Card.Body>
+                </Card>
+              </Badge>
+              <Spacer y={0.8} />
+
+
+
+
+
+
+
+
+
+              {/* <Grid xs={12} key={index}>
                 <Card>
                   <Card.Body >
-
                     <Grid.Container>
 
                       <Grid xs={12} justify="center">
-                        <Text h1 css={{ textAlign: 'center', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '5vw' }} weight="bold">
+                        <Text h1 css={{ textAlign: 'center', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '5vw', lineHeight: 'normal' }} weight="bold">
                           {exercise.title}
                         </Text>
                       </Grid>
@@ -514,9 +586,9 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                   </Card.Body>
                 </Card>
 
-              </Grid>)}
+              </Grid> */}
 
-            </Grid.Container>
+            </>)}
 
           </>}
         </>}

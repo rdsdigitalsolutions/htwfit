@@ -9,6 +9,7 @@
     "menu_admin_account": "Administrar Conta",
 
     "global_test": "Sucesso não é a chave para a felicidade. A felicidade é a chave para o sucesso. Se você ama o que está fazendo, terá sucesso.",
+    "global_homepage": "Esse é um site que ajuda o desenvolvimento pessoal e o acompanhamento de habitos mais saudaveis no treino e alimentaçāo, possibilitando alcançar seus objetivos de forma clara e constante.",
     "global_loading": "Carregando",
     "global_beta": "TEST",
     "global_search": "buscar",
@@ -59,6 +60,8 @@
     "global_done_today": "Confirmar",
     "global_done_at": "Feito às",
     "global_done": "Fez",
+    "global_duration": "de duraçāo",
+    "global_exercises_to_complete": "Contém ** exercicios",
 
 
     "errors_invalid_credentials": "Credenciais Invalidas",
