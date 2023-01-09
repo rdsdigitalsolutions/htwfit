@@ -178,12 +178,12 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
               {isDone && <>
                 <Grid.Container>
                   <Grid xs={12} justify="center">
-                    <Button auto bordered size="sm" color='primary' onClick={() => handleCancellRoutine()}>
+                    <Button auto shadow size="sm" color='primary' onClick={() => handleCancellRoutine()}>
                       {t('global_return_exercises')}
                     </Button>
                   </Grid>
 
-                  <Spacer y={0.5} />
+                  <Spacer y={1} />
 
                   <Grid xs={12} justify="center">
                     <Card>
@@ -203,10 +203,10 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                                         strokeWidth={15}
                                         styles={buildStyles({
                                           backgroundColor: "#3e98c7",
-                                          textColor: isDark ? '#fff' : '#000',
+                                          textColor: isDark ? '#c6c6c6' : '#000',
                                           pathColor: "#2abe0c",
-                                          trailColor: isDark ? '#3e98c7' : '#c6c6c6',
-                                          textSize: "22px"
+                                          trailColor: isDark ? '#3e98c7' : '#f3f3f4',
+                                          textSize: "25px"
                                         })}
                                       />
                                     </div>
@@ -251,7 +251,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                       <Card.Body>
                         <Grid.Container>
                           <Grid xs={12} justify="center">
-                            <Text h6 css={{ textAlign: 'center' }} color='gray'>
+                            <Text h6 css={{ textAlign: 'center' }} color='primary'>
                               {t('global_inspire')}:
                             </Text>
                           </Grid>

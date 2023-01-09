@@ -143,7 +143,7 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
       strokeWidth={10}
       styles={buildStyles({
         pathColor: color,
-        trailColor: isDark ? '#181818' : '#ececec',
+        trailColor: isDark ? '#181818' : '#ededed',
       })}
     >
       {children}
@@ -378,22 +378,22 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
         <Spacer y={0.5} />
 
         <Grid.Container gap={0.5} justify="center">
-          <Grid xs={5} justify="left">
+          <Grid xs={4} justify="left">
             <Text h6 color='gray'>Public</Text>
             <Spacer x={0.2} />
             <Switch size="xs" checked={!!currentPlan.publicUID} onClick={() => handleMakePublic()} />
             {currentPlan.publicUID && <>
               <Spacer x={0.2} />
               <Link href={``} target='_blank'>
-                <Button auto flat size="xs" color='primary'><FaGlobe /></Button>
+                <Button auto shadow flat size="xs" color='primary'><FaGlobe /></Button>
               </Link>
             </>}
           </Grid>
-          <Grid xs={4} justify="right">
-            <Button size="xs" onClick={handlerSizeModal} color='primary'> <FaPlus /> <Spacer x={0.2} /> Mensurements</Button>
+          <Grid xs={5} justify="right">
+            <Button size="xs" shadow onClick={handlerSizeModal} color='primary'> Mensurements</Button>
           </Grid>
           <Grid xs={3} justify="right">
-            <Button flat size="xs" color='warning' onClick={handlerFinishModal}>Finish Plan</Button>
+            <Button shadow size="xs" color='warning' onClick={handlerFinishModal}>Finish Plan</Button>
           </Grid>
         </Grid.Container>
 
@@ -446,10 +446,10 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
             <div style={{ width: "75%" }}>
               <CircularProgressbarWithChildren
                 value={(currentPlan.foodPlan.meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * currentPlan.foodPlan.meals.length) * 100).toFixed(0)}
-                strokeWidth={9}
+                strokeWidth={10}
                 styles={buildStyles({
                   pathColor: "#156dc5",
-                  trailColor: isDark ? '#181818' : '#ececec',
+                  trailColor: isDark ? '#181818' : '#ededed',
                 })}
               >
 

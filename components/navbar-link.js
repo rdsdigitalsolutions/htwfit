@@ -7,10 +7,15 @@ export default function ComponentHandler({ sessionStatus, path, name, hideAuthen
   const handleClick = (event) => {
     event.preventDefault();
     setLoadingPage(true);
-    router.push(path);
+
+    if (router.pathname === path) {
+      setLoadingPage(false);
+    } else {
+      router.push(path);
+    }
   }
 
-  const element = type === 'navbar' ? <Navbar.Link onClick={handleClick} hideIn={hideIn} isActive={isActive} color="secondary">{name}</Navbar.Link> : <Link onClick={handleClick} color="primary">{name}</Link>;
+  const element = type === 'navbar' ? <Navbar.Link onClick={handleClick} hideIn={hideIn} isActive={isActive} color="secondary">{name}</Navbar.Link> : <Link onClick={handleClick} color={router.pathname === path ? 'secondary' : 'primary'}>{name}</Link>;
 
   if (hideAuthenticated === 'authenticated') {
     return null;

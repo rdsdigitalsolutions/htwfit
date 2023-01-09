@@ -18,9 +18,7 @@ import "react-circular-progressbar/dist/styles.css";
 import Layout from '../../components/layout'
 import { authOptions } from "./../api/auth/[...nextauth]"
 import { findAll } from '../../repository/plan'
-import LoadingPage from '../../components/loading-page'
 import DefaultFetch from '../../lib/default-fetch'
-
 
 export default function ComponentHandler({ locale, currentUserPlan }) {
   const { t } = useTranslation('common');
@@ -65,6 +63,14 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
       .finally(() => setProcessing(false))
   }
 
+  const meals = currentPlan.foodPlan.meals.map((meal) => {
+    
+    return {
+      ...meal,
+      doneToday: meal.done.find((doneDate) => moment(doneDate).format('DD/MM/YYYY') === moment().format('DD/MM/YYYY')),
+    }
+  });
+
   return (
     <>
       <Head>
@@ -90,17 +96,17 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
             </Text>
           </Grid>
           <Grid xs={12} justify="center">
-            <Progress striped value={(currentPlan.foodPlan.meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * currentPlan.foodPlan.meals.length) * 100).toFixed(0)} shadow size="xs" color="primary" status="warning" />
+            <Progress striped value={(meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * meals.length) * 100).toFixed(0)} shadow size="xs" color="primary" status="warning" />
           </Grid>
           <Grid xs={12} justify="center">
             <Text small css={{ textAlign: 'center' }} color='gray'>
-              {(currentPlan.foodPlan.meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * currentPlan.foodPlan.meals.length) * 100).toFixed(0)}% {t('global_complete')}
+              {(meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * meals.length) * 100).toFixed(0)}% {t('global_complete')}
             </Text>
           </Grid>
           <Spacer y={1} />
         </Grid.Container>
 
-        {currentPlan.foodPlan.meals.map((meal, index) => <>
+        {meals.map((meal, index) => <>
           <Badge key={index} disableOutline isSquared content={`${t('global_time')} ${meal.time.replace('.', ':')}`} size="sm" placement="top-right" variant="bordered" horizontalOffset="5%" verticalOffset="-5%" color={!meal.done.find((doneDate) => moment(doneDate).format('DD/MM/YYYY') === moment().format('DD/MM/YYYY')) ? 'primary' : 'success'}>
             <Card>
               <Card.Body>
@@ -115,9 +121,9 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
                             strokeWidth={15}
                             styles={buildStyles({
                               backgroundColor: '#3e98c7',
-                              textColor: isDark ? '#fff' : '#000',
+                              textColor: isDark ? '#c6c6c6' : '#000',
                               pathColor: "#2abe0c",
-                              trailColor: isDark ? '#3e98c7' : '#c6c6c6',
+                              trailColor: isDark ? '#000' : '#f3f3f4',
                               textSize: "25px"
                             })}
                           />
@@ -150,9 +156,11 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
                     <Text small css={{ textAlign: 'center', }} color='gray'> {meal.suggestion} </Text>
                   </Grid>
                   <Spacer y={0.8} />
-                  {!meal.done.find((doneDate) => moment(doneDate).format('DD/MM/YYYY') === moment().format('DD/MM/YYYY')) && <Grid xs={12} justify="center">
-                    <Button auto size='sm' color={parseFloat(moment().format('H:MM')) > parseFloat(meal.time) ? 'warning' : 'primary'} onClick={() => handleMealDone(index)}>{t('global_done_today')}</Button>
-                  </Grid>}
+                  <Grid xs={12} justify="center">
+                    {!meal.doneToday && <>
+                      <Button auto shadow size='sm' color={parseFloat(moment().format('H:MM')) > parseFloat(meal.time) ? 'warning' : 'primary'} onClick={() => handleMealDone(index)}>{t('global_done_today')}</Button>
+                    </>}
+                  </Grid>
                 </Grid.Container>
               </Card.Body>
             </Card>
