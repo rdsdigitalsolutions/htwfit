@@ -2,6 +2,7 @@ import { appWithTranslation } from 'next-i18next'
 import { SessionProvider } from "next-auth/react"
 import { createTheme, NextUIProvider } from "@nextui-org/react"
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import { Analytics } from '@vercel/analytics/react';
 
 const lightTheme = createTheme({
   type: 'light',
@@ -36,6 +37,7 @@ function App({ Component, pageProps }) {
   >
     <NextUIProvider>
       <Component {...pageProps} />
+      <Analytics />
     </NextUIProvider>
   </NextThemesProvider>;
 }

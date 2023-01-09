@@ -514,13 +514,15 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
 
         <Grid.Container gap={0} justify="center">
 
-          {['weight', 'chest', 'leftArm', 'rightArm', 'waist', 'hips', 'leftThigh', 'rightThigh', 'leftCalf', 'rightCalf'].map((indicator, index) => (currentPlan.mensurements[0] && <Grid key={index} xs={12} justify="center">
+          {['weight', 'chest', 'leftArm', 'rightArm', 'waist', 'hips', 'leftThigh', 'rightThigh', 'leftCalf', 'rightCalf'].map((indicator, index) => (currentPlan.mensurements[index] && <>
+          
+          <Grid key={index} xs={12} justify="center">
             <Grid.Container gap={0} justify="center">
               <Grid xs={5} justify="left">
                 <Text h6 weight="bold" color='secondary'>{processMeansurementName(indicator)}:</Text>
               </Grid>
               {currentPlan.mensurements[0][indicator] === currentPlan.mensurements[currentPlan.mensurements.length - 1][indicator] && <Grid xs={7} justify="right">
-                <Text h6 >{currentPlan.mensurements[0][indicator]}{indicator === 'weight' ? 'kg' : 'cm'}</Text>
+                <Text h6 >{currentPlan.mensurements[index][indicator]}{indicator === 'weight' ? 'kg' : 'cm'}</Text>
               </Grid>}
 
               {currentPlan.mensurements[0][indicator] !== currentPlan.mensurements[currentPlan.mensurements.length - 1][indicator] && <>
@@ -539,7 +541,9 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
               </>}
 
             </Grid.Container>
-          </Grid>))}
+          </Grid>
+          
+          </>))}
 
         </Grid.Container>
 
