@@ -132,7 +132,7 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
                       <Spacer y={0.2} />
                       <Grid xs={12} justify="center">
                         <Text small color='gray'>
-                          {meal.done.length} {t('global_of')} {(currentPlan.lengthInWeeks * 7)}
+                        {t('global_done')} {meal.done.length} {t('global_of')} {(currentPlan.lengthInWeeks * 7)}
                         </Text>
                       </Grid>
                     </Grid.Container>

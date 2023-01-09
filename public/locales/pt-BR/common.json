@@ -56,8 +56,9 @@
     "global_my_meals": "Minhas Refeiçōes",
     "global_weeks": "Semanas",
     "global_time": "Hora",
-    "global_done_today": "Feito Hoje",
+    "global_done_today": "Confirmar",
     "global_done_at": "Feito às",
+    "global_done": "Fez",
 
 
     "errors_invalid_credentials": "Credenciais Invalidas",
