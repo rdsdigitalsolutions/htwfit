@@ -9,6 +9,7 @@ import { FaPlay, FaAngleDoubleLeft, FaAngleDoubleRight, FaAward, FaGoogle, FaYou
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import { useStopwatch } from 'react-timer-hook';
 import { useTheme } from '@nextui-org/react';
+import NoSleep from "nosleep.js";
 
 import {
   CircularProgressbar,
@@ -28,6 +29,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
   const { isDark } = useTheme();
 
   const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const noSleep = new NoSleep();
 
   const [processing, setProcessing] = useState(false);
   const [statusMessage, setStatusMessage] = useState(null);
@@ -581,7 +583,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                       <Spacer y={0.8} />
                       {exercise.done.length < (currentPlans.lengthInWeeks * exercise.days.length) && <>
                         <Grid xs={12} justify="center">
-                          <Button auto type="submit" color={exercise.days.find(dayOfWeek => dayOfWeek === (new Date()).getDay()) ? 'primary' : 'gray'} onClick={() => { setSelectedExercise(exercise); start(); }}>
+                          <Button auto type="submit" color={exercise.days.find(dayOfWeek => dayOfWeek === (new Date()).getDay()) ? 'primary' : 'gray'} onClick={() => { setSelectedExercise(exercise); start(); noSleep.enable(); }}>
                             {exercise.days.map(dayOfWeek => t(`global_${weekday[dayOfWeek]}`)).join(' / ')} <Spacer x={0.5} /> <FaPlay />
                           </Button>
                         </Grid>
@@ -591,53 +593,6 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                 </Card>
               </Badge>
               <Spacer y={0.8} />
-
-
-
-
-
-
-
-
-
-              {/* <Grid xs={12} key={index}>
-                <Card>
-                  <Card.Body >
-                    <Grid.Container>
-
-                      <Grid xs={12} justify="center">
-                        <Text h1 css={{ textAlign: 'center', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '5vw', lineHeight: 'normal' }} weight="bold">
-                          {exercise.title}
-                        </Text>
-                      </Grid>
-
-                      <Grid xs={12} justify="center">
-                        <Progress striped value={((exercise.done.length / (currentPlans.lengthInWeeks * exercise.days.length)) * 100).toFixed(0)} shadow size="xs" color="primary" status="warning" />
-                      </Grid>
-
-                      <Spacer y={0.2} />
-
-                      <Grid xs={12} justify="center">
-                        <Text h6 color='gray'>
-                          {((exercise.done.length / (currentPlans.lengthInWeeks * exercise.days.length)) * 100).toFixed(0)}% {t('global_complete')}.
-                        </Text>
-                      </Grid>
-
-                      {exercise.done.length < (currentPlans.lengthInWeeks * exercise.days.length) && <>
-
-                        <Grid xs={12} justify="center">
-                          <Button auto type="submit" color={exercise.days.find(dayOfWeek => dayOfWeek === (new Date()).getDay()) ? 'primary' : 'gray'} onClick={() => { setSelectedExercise(exercise); start(); }}>
-                            {exercise.days.map(dayOfWeek => t(`global_${weekday[dayOfWeek]}`)).join(' / ')} <Spacer x={0.5} /> <FaPlay />
-                          </Button>
-                        </Grid>
-                      </>}
-
-                    </Grid.Container>
-
-                  </Card.Body>
-                </Card>
-
-              </Grid> */}
 
             </>)}
 

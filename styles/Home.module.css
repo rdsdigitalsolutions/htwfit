@@ -1,5 +1,6 @@
 .container {
   padding: 0 2rem;
+  overscroll-behavior-y: contain !important;
 }
 
 .main {

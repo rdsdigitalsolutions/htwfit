@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import { Container, Spacer } from '@nextui-org/react';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
-import NoSleep from "nosleep.js";
 
 import styles from '../styles/Home.module.css'
 import Footer from './footer'
@@ -15,12 +14,10 @@ export default function ComponentHandler({ children, locale, providers, loading 
   const router = useRouter();
 
   useEffect(() => {
-    const noSleep = new NoSleep();
     window.onbeforeunload = () => true;
 
     return () => {
       window.onbeforeunload = null;
-      noSleep.enable();
     };
   }, []);
 
