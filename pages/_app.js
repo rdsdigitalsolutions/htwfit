@@ -4,6 +4,8 @@ import { createTheme, NextUIProvider } from "@nextui-org/react"
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { Analytics } from '@vercel/analytics/react';
 
+import '../styles/globals.css'
+
 const lightTheme = createTheme({
   type: 'light',
   theme: {

@@ -10,7 +10,7 @@ import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import { useStopwatch } from 'react-timer-hook';
 import { useTheme } from '@nextui-org/react';
 import NoSleep from "nosleep.js";
-import { useBeforeunload } from 'react-beforeunload';
+import isNode from 'detect-node'
 
 import {
   CircularProgressbar,
@@ -28,8 +28,8 @@ import styles from '../../styles/Home.module.css'
 export default function ComponentHandler({ locale, initialActivePlan }) {
   const { t } = useTranslation('common');
   const { isDark } = useTheme();
-
-  const noSleep = new NoSleep();
+  
+  const noSleep = !isNode ? new NoSleep() : null;
   const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   
   const [processing, setProcessing] = useState(false);
@@ -49,10 +49,6 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
   const { seconds, minutes, hours, isRunning, start, pause, reset } = useStopwatch({ autoStart: false });
   const totalRepetitionsStatus = selectedExercise ? selectedExercise.training.reduce((acc, curr) => acc + curr.repetitions.length, 0) : 0;
   const getLatestWeight = (currentTrainning) => currentTrainning.weight[(currentTrainning.weight.length ? (currentTrainning.weight.length - 1) : 0)] || 0;
-
-  useBeforeunload((event) => {
-    event.preventDefault();
-  });
 
   useEffect(() => {
     if (selectedExercise) {
