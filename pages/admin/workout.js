@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { unstable_getServerSession } from "next-auth/next"
 import { useTranslation } from 'next-i18next'
-import { Text, Grid, Card, Button, Progress, Spacer, Input, Link, Badge } from '@nextui-org/react';
-import { FaPlay, FaAngleDoubleLeft, FaAngleDoubleRight, FaAward, FaSearch, FaCheck, FaGoogle, FaYoutube } from "react-icons/fa";
+import { Text, Grid, Card, Button, Progress, Spacer, Input, Link, Badge, Loading } from '@nextui-org/react';
+import { FaPlay, FaAngleDoubleLeft, FaAngleDoubleRight, FaAward, FaGoogle, FaYoutube } from "react-icons/fa";
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import { useStopwatch } from 'react-timer-hook';
 import { useTheme } from '@nextui-org/react';
@@ -161,7 +161,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
               </Grid>
 
               <Grid xs={12} justify="center">
-                <Progress striped value={((currentRepetitionsStatus / totalRepetitionsStatus) * 100).toFixed(0)} shadow size="xs" color="primary" status="warning" />
+                <Progress striped value={((currentRepetitionsStatus / totalRepetitionsStatus) * 100).toFixed(0)} shadow size="md" color="primary" status="warning" />
               </Grid>
 
               <Grid xs={12} justify="center">
@@ -205,7 +205,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                                           backgroundColor: "#3e98c7",
                                           textColor: isDark ? '#c6c6c6' : '#000',
                                           pathColor: "#2abe0c",
-                                          trailColor: isDark ? '#3e98c7' : '#f3f3f4',
+                                          trailColor: isDark ? '#000' : '#f3f3f4',
                                           textSize: "25px"
                                         })}
                                       />
@@ -251,7 +251,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                       <Card.Body>
                         <Grid.Container>
                           <Grid xs={12} justify="center">
-                            <Text h6 css={{ textAlign: 'center' }} color='primary'>
+                            <Text h6 css={{ textAlign: 'center' }} color='gray'>
                               {t('global_inspire')}:
                             </Text>
                           </Grid>
@@ -291,153 +291,204 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                 </Card.Body>
               </Card>}
 
-              {!isDone && currentTrainning && <Card>
+              {!isDone && currentTrainning && <>
 
-                <Card.Header>
-                  <Grid.Container>
-                    <Grid xs={12} justify="center">
-                      <Text h1 css={{ textAlign: 'center', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '6vw', lineHeight: 'normal' }} weight="bold">
-                        {currentTrainning.title}
-                      </Text>
-                    </Grid>
-                    <Grid xs={12} justify="center">
-                      <Text h6 css={{ textAlign: 'center' }} color="gray">
-                        {currentTrainning.observations}
-                      </Text>
-                    </Grid>
-                    <Grid xs={12} justify="center">
-                      <Link href={`https://www.google.com/search?tbm=isch&q=${currentTrainning.title}`} target='_blank'>
-                        <Button auto size='sm' bordered color='primary'><FaGoogle /></Button>
-                      </Link>
-                      <Spacer x={0.5} />
-                      <Link href={`http://www.youtube.com/results?search_query=${currentTrainning.title}`} target='_blank'>
-                        <Button auto size='sm' bordered color='primary'><FaYoutube /></Button>
-                      </Link>
-                    </Grid>
-                  </Grid.Container>
-                </Card.Header>
-
-                <Card.Body>
-
-
-                  {(currentExecutionIndex + 1) <= currentTrainning.repetitions.length && <Grid.Container>
-
-                    {(seconds > 10 || minutes > 0 || hours > 0) && <Grid xs={12} justify="center">
-                      <CountdownCircleTimer
-                        key={currentExecutionIndex}
-                        isPlaying={isResting}
-                        strokeWidth={30}
-                        duration={currentTrainning.restPause}
-                        colors={['#20436f', '#F7B801', '#A30000', '#A30000']}
-                        colorsTime={[
-                          currentTrainning.restPause,
-                          currentTrainning.restPause / 2,
-                          currentTrainning.restPause / 4,
-                          0,
-                        ]}
-                        onComplete={() => {
-                          setIsResting(false);
-                          setCurrentExecutionIndex(currentExecutionIndex + 1);
-                          setCurrentRepetitionsStatus(currentRepetitionsStatus + 1);
-                          return { shouldRepeat: false }
-                        }}
-                      >
-                        {({ remainingTime }) => {
-                          if (remainingTime < currentTrainning.restPause) setRemainingTime(remainingTime);
-                          return <Button auto flat size="xl" disabled={isResting} color='primary' onClick={() => setIsResting(true)}>
-                            {remainingTime !== currentTrainning.restPause ? `${remainingTime}s` : <FaPlay />}
-                          </Button>
-                        }}
-                      </CountdownCircleTimer>
-                    </Grid>}
-
-                    {seconds < 10 && minutes === 0 && hours === 0 && <>
-                      <Card variant="bordered">
-                        <Spacer y={2} />
+                {(currentExecutionIndex + 1) > currentTrainning.repetitions.length && <>
+                  <Card>
+                    <Card.Body>
+                      <Grid.Container gap={0} >
                         <Grid xs={12} justify="center">
-                          <Text h3 css={{ textAlign: 'center' }} color='warning'>
-                            {t('global_execute_instruction')}.
+                          <Spacer x={1} />
+                          <FaAward size={80} />
+                          <Spacer x={0.8} />
+                          <Text h3 css={{ textAlign: 'center' }} weight="bold">
+                            {t('global_congrats_exercise_done')}.
                           </Text>
                         </Grid>
+
+                        <Spacer y={1} />
+
+                        <Grid xs={12} justify="center">
+                          <Input
+                            size="md"
+                            fullWidth={true}
+                            type="text"
+                            bordered
+                            initialValue={weightChange || 0}
+                            value={weightChange || 0}
+                            label={t('global_adjust_weight')}
+                            onChange={(e) => setWeightChange(parseFloat(e.target.value))}
+                          />
+                        </Grid>
+
                         <Spacer y={2} />
-                      </Card>
-                    </>}
 
-                    <Spacer y={1} />
+                        <Grid xs={12} justify="center">
+                          <Button auto shadow size="md" color='success' onClick={() => handleTrainningConclusion()}>
+                            {currentRepetitionsStatus === totalRepetitionsStatus ? t('global_conclude') : t('global_start_next')} <Spacer x={0.5} /> <FaAngleDoubleRight />
+                          </Button>
+                        </Grid>
+                      </Grid.Container>
+                    </Card.Body>
+                  </Card>
+                </>}
 
+                {(currentExecutionIndex + 1) <= currentTrainning.repetitions.length && seconds < 8 && minutes === 0 && hours === 0 && <>
+                  <Card variant="bordered">
+                    <Spacer y={2} />
                     <Grid xs={12} justify="center">
-                      <Text h6 color='gray'>
-                        {t('global_number_of_repetitions')}
+                      <Text h3 css={{ textAlign: 'center' }} color='warning'>
+                        {t('global_execute_instruction')}.
                       </Text>
                     </Grid>
+                    <Grid xs={12} justify="center">
+                      <Loading type="points" />
+                    </Grid>
+                    <Spacer y={2} />
+                  </Card>
+                </>}
+
+                {(currentExecutionIndex + 1) <= currentTrainning.repetitions.length && (seconds > 8 || minutes > 0 || hours > 0) && <>
+                  <Grid.Container gap={0} >
 
                     <Grid xs={12} justify="center">
-                      {currentTrainning.repetitions.map((repetition, index) => <Text key={index} className={index === currentExecutionIndex && !isResting ? styles.blobYellow : styles.blob}>{repetition}</Text>)}
+                      <Card>
+                        <Card.Body>
+
+                          <Grid.Container gap={0} >
+                            <Grid xs={12} justify="center">
+                              <Text h1 css={{ textAlign: 'center', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '7vw', lineHeight: 'normal' }} weight="bold">
+                                {currentTrainning.title}
+                              </Text>
+                            </Grid>
+
+                            <Grid xs={8} justify="left">
+                              <Grid.Container gap={0} >
+                                <Grid xs={12} justify="left">
+                                  <Text h6 css={{ textAlign: 'left' }} color="gray">
+                                    {currentTrainning.observations}
+                                  </Text>
+                                </Grid>
+                                <Grid xs={12} justify="center">
+                                  <Link href={`https://www.google.com/search?tbm=isch&q=${currentTrainning.title}`} target='_blank'>
+                                    <Button auto size='sm' shadow color='primary'><FaGoogle /></Button>
+                                  </Link>
+                                  <Spacer x={0.5} />
+                                  <Link href={`http://www.youtube.com/results?search_query=${currentTrainning.title}`} target='_blank'>
+                                    <Button auto size='sm' shadow color='primary'><FaYoutube /></Button>
+                                  </Link>
+                                </Grid>
+                              </Grid.Container>
+
+                            </Grid>
+                            <Grid xs={4} justify="center">
+                              <Grid.Container gap={0} >
+                                <Grid xs={12} justify="center">
+                                  {(currentExecutionIndex + 1) <= currentTrainning.repetitions.length && <>
+                                    <CountdownCircleTimer
+                                      size='110'
+                                      key={currentExecutionIndex}
+                                      isPlaying={isResting}
+                                      strokeWidth={8}
+                                      duration={currentTrainning.restPause}
+                                      trailColor={isDark ? '#000' : '#c6c6c6'}
+                                      isSmoothColorTransition={true}
+                                      colors={['#0072f6', '#F7B801', '#A30000', '#A30000']}
+                                      colorsTime={[
+                                        currentTrainning.restPause,
+                                        currentTrainning.restPause / 2,
+                                        currentTrainning.restPause / 4,
+                                        0,
+                                      ]}
+                                      onComplete={() => {
+                                        setIsResting(false);
+                                        setCurrentExecutionIndex(currentExecutionIndex + 1);
+                                        setCurrentRepetitionsStatus(currentRepetitionsStatus + 1);
+                                        return { shouldRepeat: false }
+                                      }}
+                                    >
+                                      {({ remainingTime }) => {
+                                        if (remainingTime < currentTrainning.restPause) setRemainingTime(remainingTime);
+                                        return <Button auto shadow size="md" disabled={isResting} color='primary' onClick={() => setIsResting(true)} role="timer" aria-live="assertive">
+                                          {remainingTime !== currentTrainning.restPause ? `${remainingTime}s` : <FaPlay />}
+                                        </Button>
+                                      }}
+                                    </CountdownCircleTimer>
+                                  </>}
+                                </Grid>
+
+                                <Grid xs={12} justify="center">
+                                  <Text small color='gray'>{t('global_stopwatch')}</Text>
+                                </Grid>
+                              </Grid.Container>
+                            </Grid>
+
+                          </Grid.Container>
+
+                        </Card.Body>
+                      </Card>
                     </Grid>
 
-                    {weightChange > 0 && <>
+                    <Spacer y={0.5} />
+                    <Grid xs={12} justify="center">
+                      <Card>
+                        <Card.Body>
+                          <Grid.Container gap={0} >
+                            <Grid xs={5} justify="center">
+                              {weightChange > 0 && <>
+                                <Grid.Container gap={0} >
+                                  <Grid xs={12} justify="center">
+                                    <Text h2>{weightChange}kg</Text>
+                                  </Grid>
+                                  <Grid xs={12} justify="center">
+                                    <Text small color='gray'>{t('global_initial_weight')}</Text>
+                                  </Grid>
+                                </Grid.Container>
+                              </>}
+                            </Grid>
+
+                            <Grid xs={6} justify="center">
+                              <Grid.Container gap={0} >
+                                <Grid xs={12} justify="right">
+                                  <Text h6 color='primary'>
+                                    {t('global_number_of_repetitions')}
+                                  </Text>
+                                </Grid>
+                                <Grid xs={12} justify="right">
+                                  {currentTrainning.repetitions.map((repetition, index) => <Text key={index} className={index === currentExecutionIndex && !isResting ? styles.blobYellow : styles.blob}>{repetition}</Text>)}
+                                </Grid>
+                              </Grid.Container>
+                            </Grid>
+                          </Grid.Container>
+                        </Card.Body>
+                      </Card>
+                    </Grid>
+
+                    {trainnings[0] && <>
                       <Spacer y={0.5} />
                       <Grid xs={12} justify="center">
-                        <Badge isSquared color='warning' variant="bordered">{t('global_initial_weight')}:<Spacer x={0.2} /> {weightChange}kg</Badge>
+                        <Card>
+                          <Card.Body>
+                            <Grid.Container>
+                              <Grid xs={4} justify="right">
+                                <Text small color='gray'>{t('global_next_exercise')}:</Text>
+                              </Grid>
+                              <Grid xs={8} justify="center">
+                                <Text small color='warning'>{trainnings[0].title}</Text>
+                              </Grid>
+                            </Grid.Container>
+                          </Card.Body>
+                        </Card>
                       </Grid>
                     </>}
 
-
-                  </Grid.Container>}
-
-                  {(currentExecutionIndex + 1) > currentTrainning.repetitions.length && <Grid.Container>
-                    <Grid xs={12} justify="center">
-                      <Spacer x={1} />
-                      <FaAward size={80} />
-                      <Spacer x={0.8} />
-                      <Text h3 css={{ textAlign: 'left' }} weight="bold">
-                        {t('global_congrats_exercise_done')}.
-                      </Text>
-                    </Grid>
-
-                    <Spacer y={3} />
-
-                    <Grid xs={12} justify="center">
-                      <Input
-                        size="md"
-                        fullWidth={true}
-                        type="text"
-                        bordered
-                        initialValue={weightChange || 0}
-                        value={weightChange || 0}
-                        label={t('global_adjust_weight')}
-                        onChange={(e) => setWeightChange(parseFloat(e.target.value))}
-                      />
-                    </Grid>
-
-                    <Spacer y={1} />
-
-                    <Grid xs={12} justify="center">
-                      <Button auto bordered size="md" color='success' onClick={() => handleTrainningConclusion()}>
-                        {currentRepetitionsStatus === totalRepetitionsStatus ? t('global_conclude') : t('global_start_next')} <Spacer x={0.5} /> <FaAngleDoubleRight />
-                      </Button>
-                    </Grid>
-                  </Grid.Container>}
-
-
-                </Card.Body>
-              </Card>}
+                  </Grid.Container>
+                </>}
+              </>}
 
             </Grid>
 
             {!isDone && currentTrainning && (currentExecutionIndex + 1) <= currentTrainning.repetitions.length && <>
-
-              <Spacer y={1} />
-
-              <Grid xs={12} justify="center">
-                {remainingTime > 0 && remainingTime < (currentTrainning.restPause / 4) && <Badge isSquared variant="bordered" color='warning'>
-                  {t('global_get_ready')}
-                </Badge>}
-                {remainingTime > (currentTrainning.restPause / 4) && <Badge isSquared variant="bordered" color='success'>
-                  {t('global_rest')}
-                </Badge>}
-              </Grid>
-
               <Spacer y={1} />
 
               <Grid xs={12} justify="center">
@@ -477,7 +528,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
             <Spacer y={1} />
             {(currentPlans.exercises || []).map((exercise, index) => <>
 
-              <Badge key={index} disableOutline isSquared content={`${(exercise.done.reduce((acc, curr) => acc + (curr.duration||0), 0) / (exercise.done.length || 1)).toFixed(0)}min ${t('global_duration')} `} size="sm" placement="top-right" variant="bordered" horizontalOffset="10%" verticalOffset="-5%" color='primary'>
+              <Badge key={index} disableOutline isSquared content={`${(exercise.done.reduce((acc, curr) => acc + (curr.duration || 0), 0) / (exercise.done.length || 1)).toFixed(0)}min ${t('global_duration')} `} size="sm" placement="top-right" variant="bordered" horizontalOffset="10%" verticalOffset="-5%" color='primary'>
                 <Card>
                   <Card.Body>
                     <Grid.Container>

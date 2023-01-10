@@ -11,7 +11,7 @@
     "global_test": "Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful.",
     "global_homepage": "This is a site to help you self develop and track better habits of exercise and eat well to achieve your fitness goals.",
     "global_loading": "Loading",
-    "global_beta": "BETA",
+    "global_beta": "beta",
     "global_search": "search",
     "global_reset": "reset",
     "global_login": "Login",
@@ -62,6 +62,8 @@
     "global_done": "Done",
     "global_duration": "of duration",
     "global_exercises_to_complete": "Contain ** exercises",
+    "global_next_exercise": "Next exercise",
+    "global_stopwatch": "Stopwatch",
 
 
 

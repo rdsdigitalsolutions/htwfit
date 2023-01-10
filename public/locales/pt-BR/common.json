@@ -11,7 +11,7 @@
     "global_test": "Sucesso não é a chave para a felicidade. A felicidade é a chave para o sucesso. Se você ama o que está fazendo, terá sucesso.",
     "global_homepage": "Esse é um site que ajuda o desenvolvimento pessoal e o acompanhamento de habitos mais saudaveis no treino e alimentaçāo, possibilitando alcançar seus objetivos de forma clara e constante.",
     "global_loading": "Carregando",
-    "global_beta": "TEST",
+    "global_beta": "beta",
     "global_search": "buscar",
     "global_reset": "resetar",
     "global_login": "Entrar",
@@ -43,7 +43,7 @@
     "global_initial_weight": "Peso inicial",
     "global_cancell_routine": "Cancelar Rotina",
     "global_skip": "Pular por agora",
-    "global_execute_instruction": "Por favor execute a primeira repetiçāo e entāo inicie o cronometro quando terminar",
+    "global_execute_instruction": "Por favor execute a primeira repetiçāo e entāo inicie o cronometro",
     "global_congrats_exercise_done": "Parabéns, exercicio concluido",
     "global_adjust_weight": "Ajuste o peso para a proxima sessāo",
     "global_start_next": "Começar Proximo",
@@ -62,6 +62,8 @@
     "global_done": "Fez",
     "global_duration": "de duraçāo",
     "global_exercises_to_complete": "Contém ** exercicios",
+    "global_next_exercise": "Próximo exercisio",
+    "global_stopwatch": "Cronometro",
 
 
     "errors_invalid_credentials": "Credenciais Invalidas",
