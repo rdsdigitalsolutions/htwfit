@@ -28,10 +28,10 @@ import styles from '../../styles/Home.module.css'
 export default function ComponentHandler({ locale, initialActivePlan }) {
   const { t } = useTranslation('common');
   const { isDark } = useTheme();
-  
+
   const noSleep = !isNode ? new NoSleep() : null;
   const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  
+
   const [processing, setProcessing] = useState(false);
   const [statusMessage, setStatusMessage] = useState(null);
   const [isDone, setIsDone] = useState(false);
