@@ -12,15 +12,7 @@ import LoadingPage from './loading-page'
 export default function ComponentHandler({ children, locale, providers, loading = false, restricted = false }) {
   const { t } = useTranslation('common');
   const router = useRouter();
-
-  useEffect(() => {
-    window.onbeforeunload = () => true;
-
-    return () => {
-      window.onbeforeunload = null;
-    };
-  }, []);
-
+  
   const [loadingPage, setLoadingPage] = useState(loading);
 
   const { data: session, status: sessionStatus } = useSession({

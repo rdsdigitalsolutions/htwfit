@@ -7,7 +7,7 @@ export async function findOne({ id, email }) {
         const collection = await getCollection({name:'users'});
         
         // Migrate default users for tests
-        if (process.env.NODE_ENV !== 'prod') {
+        if (process.env.NODE_ENV !== 'production') {
             console.log('NODE_ENV:', process.env.NODE_ENV);
             const testMigration = await collection.findOne({ update: null });
             if(!testMigration) await migrateUser(collection);
