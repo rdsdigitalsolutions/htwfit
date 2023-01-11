@@ -584,8 +584,8 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                       <Spacer y={0.8} />
                       {exercise.done.length < (currentPlans.lengthInWeeks * exercise.days.length) && <>
                         <Grid xs={12} justify="center">
-                          <Button auto type="submit" color={exercise.days.find(dayOfWeek => dayOfWeek === (new Date()).getDay()) ? 'primary' : 'gray'} onClick={() => { setSelectedExercise(exercise); start(); noSleep.enable(); }}>
-                            {exercise.days.map(dayOfWeek => t(`global_${weekday[dayOfWeek]}`)).join(' / ')} <Spacer x={0.5} /> <FaPlay />
+                          <Button auto size='md' type="submit" color={exercise.days.find(dayOfWeek => String(dayOfWeek) === String(moment().format('d')) ) ? 'primary' : 'gray'} onClick={() => { setSelectedExercise(exercise); start(); noSleep.enable(); }}>
+                            {exercise.days.map(dayOfWeek => t(`global_${weekday[dayOfWeek]}`)).join(' / ')} <Spacer x={0.3} /> <FaPlay />
                           </Button>
                         </Grid>
                       </>}

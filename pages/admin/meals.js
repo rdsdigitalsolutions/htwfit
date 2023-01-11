@@ -97,7 +97,7 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
             </Text>
           </Grid>
           <Grid xs={12} justify="center">
-            <Progress striped value={(meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * meals.length) * 100).toFixed(0)} shadow size="xs" color="primary" status="warning" />
+            <Progress striped value={(meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * meals.length) * 100).toFixed(0)} shadow size="md" color="primary" status="warning" />
           </Grid>
           <Grid xs={12} justify="center">
             <Text small css={{ textAlign: 'center' }} color='gray'>
@@ -160,12 +160,8 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
                   <Spacer y={0.8} />
                   <Grid xs={12} justify="center">
                     {!meal.doneToday && <>
-                      <Button auto shadow size='sm' color={parseFloat(moment().format('H:MM')) > parseFloat(meal.time) ? 'warning' : 'primary'} onClick={() => handleMealDone(index)}>{t('global_done_today')}</Button>
+                      <Button auto shadow size='sm' color={parseFloat(moment().format('H:MM')) > parseFloat(meal.time) ? 'warning' : 'primary'} onClick={() => handleMealDone(index)}>{t('global_done_today')}: {moment().format('DD/MM/YY')}</Button>
                     </>}
-
-                    {/* {meal.doneToday && <>
-                      <Text small color='success'>{t('global_done')}</Text>
-                    </>} */}
                   </Grid>
                 </Grid.Container>
               </Card.Body>

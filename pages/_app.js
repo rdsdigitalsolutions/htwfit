@@ -39,7 +39,7 @@ function App({ Component, pageProps }) {
   >
     <NextUIProvider>
       <Component {...pageProps} />
-      <Analytics />
+      {process.env.NODE_ENV === 'production' && <Analytics />}
     </NextUIProvider>
   </NextThemesProvider>;
 }

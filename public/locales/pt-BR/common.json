@@ -64,6 +64,12 @@
     "global_exercises_to_complete": "Contém ** exercicios",
     "global_next_exercise": "Próximo exercicio",
     "global_stopwatch": "Cronometro",
+    "global_total_plan_complete": "Total completo do plano",
+    "global_mensurements": "Medidas",
+    "global_finish_plan": "Encerrar",
+    "global_public": "Publico",
+    "gloabl_avg_session_duration": "Duraçāo média do treino",
+    "global_overal_food_plan": "Progesso do plano alimentar",
 
 
     "errors_invalid_credentials": "Credenciais Invalidas",

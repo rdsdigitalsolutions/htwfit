@@ -379,7 +379,7 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
 
         <Grid.Container gap={0.5} justify="center">
           <Grid xs={4} justify="left">
-            <Text h6 color='gray'>Public</Text>
+            <Text h6 color='gray'>{t('global_public')}</Text>
             <Spacer x={0.2} />
             <Switch size="xs" checked={!!currentPlan.publicUID} onClick={() => handleMakePublic()} />
             {currentPlan.publicUID && <>
@@ -390,10 +390,10 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
             </>}
           </Grid>
           <Grid xs={5} justify="right">
-            <Button size="xs" shadow onClick={handlerSizeModal} color='primary'> Mensurements</Button>
+            <Button size="xs" shadow onClick={handlerSizeModal} color='primary'> {t('global_mensurements')}</Button>
           </Grid>
           <Grid xs={3} justify="right">
-            <Button shadow size="xs" color='warning' onClick={handlerFinishModal}>Finish Plan</Button>
+            <Button shadow size="xs" color='warning' onClick={handlerFinishModal}>{t('global_finish_plan')}</Button>
           </Grid>
         </Grid.Container>
 
@@ -426,12 +426,12 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
                   </Text>
                 </Grid> */}
                 <Grid xs={12} justify="center">
-                  <Progress color="primary" size="xs" value={((Number((currentPlan.foodPlan.meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * currentPlan.foodPlan.meals.length) * 100).toFixed(0)) + currentPlan.exercises.reduce((acc, curr) => acc + Number(((curr.done.length / (currentPlan.lengthInWeeks * curr.days.length)) * 100).toFixed(0)), 0)) / (currentPlan.exercises.length + 1)).toFixed(0)} />
+                  <Progress color="primary" size="md" striped value={((Number((currentPlan.foodPlan.meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * currentPlan.foodPlan.meals.length) * 100).toFixed(0)) + currentPlan.exercises.reduce((acc, curr) => acc + Number(((curr.done.length / (currentPlan.lengthInWeeks * curr.days.length)) * 100).toFixed(0)), 0)) / (currentPlan.exercises.length + 1)).toFixed(0)} />
                 </Grid>
                 <Spacer y={0.5} />
                 <Grid xs={12} justify="center">
-                  <Text small color='gray'>
-                    {((Number((currentPlan.foodPlan.meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * currentPlan.foodPlan.meals.length) * 100).toFixed(0)) + currentPlan.exercises.reduce((acc, curr) => acc + Number(((curr.done.length / (currentPlan.lengthInWeeks * curr.days.length)) * 100).toFixed(0)), 0)) / (currentPlan.exercises.length + 1)).toFixed(0)}% Total Plan Complete
+                  <Text small color='secondary'>
+                    {((Number((currentPlan.foodPlan.meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * currentPlan.foodPlan.meals.length) * 100).toFixed(0)) + currentPlan.exercises.reduce((acc, curr) => acc + Number(((curr.done.length / (currentPlan.lengthInWeeks * curr.days.length)) * 100).toFixed(0)), 0)) / (currentPlan.exercises.length + 1)).toFixed(0)}% {t('global_total_plan_complete')}
                   </Text>
                 </Grid>
 
@@ -450,12 +450,12 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
                 value={(currentPlan.foodPlan.meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * currentPlan.foodPlan.meals.length) * 100).toFixed(0)}
                 strokeWidth={10}
                 styles={buildStyles({
-                  pathColor: "#156dc5",
+                  pathColor: "#0eff00",
                   trailColor: isDark ? '#181818' : '#ededed',
                 })}
               >
 
-                {currentPlan.exercises.reduce((acc, curr) => <CircleElement width='76%' color={curr.color} total={((curr.done.length / (currentPlan.lengthInWeeks * curr.days.length)) * 100).toFixed(0)}>{acc}</CircleElement>, <Avatar
+                {currentPlan.exercises.reduce((acc, curr, index) => <CircleElement key={index} width='76%' color={curr.color} total={((curr.done.length / (currentPlan.lengthInWeeks * curr.days.length)) * 100).toFixed(0)}>{acc}</CircleElement>, <Avatar
                   color="primary"
                   size="xl"
                   src={`${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/${session.user.image}`}
@@ -472,7 +472,7 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
         <Grid.Container gap={0} justify="center">
           <Grid xs={12} justify="center">
             <Text h6 weight="bold">
-              Average session duration:
+              {t('gloabl_avg_session_duration')}:
             </Text>
             <Spacer x={0.5} />
             <Text h6 weight="bold" color='secondary'>
@@ -487,11 +487,11 @@ export default function ComponentHandler({ locale, currentUserPlan, session }) {
           <Card.Body>
             <Grid.Container gap={0} justify="center">
               <Grid xs={3} justify="left">
-                <FaCircle color='#156dc5' /> <Spacer x={0.5} /> <Text h6 weight="bold">{(currentPlan.foodPlan.meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * currentPlan.foodPlan.meals.length) * 100).toFixed(0)}%</Text>
+                <FaCircle color='#0eff00' /> <Spacer x={0.5} /> <Text h6 weight="bold">{(currentPlan.foodPlan.meals.reduce((acc, curr) => acc + curr.done.length, 0) / ((currentPlan.lengthInWeeks * 7) * currentPlan.foodPlan.meals.length) * 100).toFixed(0)}%</Text>
               </Grid>
               <Grid xs={9} justify="left">
                 <Text h5 weight="bold">
-                  Overall Food Plan
+                  {t('global_overal_food_plan')}
                 </Text>
               </Grid>
             </Grid.Container>
