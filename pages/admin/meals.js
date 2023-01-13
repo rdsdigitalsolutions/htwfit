@@ -54,6 +54,7 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
       }
     };
 
+    setProcessing(true);
     DefaultFetch({
       url: `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/v1/plan`,
       method: 'PUT',
