@@ -33,13 +33,6 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
   const [currentPlan, setCurrentPlan] = useState(currentUserPlan);
 
   const handleMealDone = mealIndex => {
-    confetti({
-      angle: randomInRange(55, 125),
-      spread: randomInRange(50, 70),
-      particleCount: randomInRange(50, 100),
-      origin: { y: 1 }
-    });
-
     const newMeals = [...currentPlan.foodPlan.meals];
 
     newMeals[mealIndex].done.push(moment().format());
@@ -67,6 +60,13 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
         }
 
         setCurrentPlan(newPlan);
+
+        confetti({
+          angle: randomInRange(55, 125),
+          spread: randomInRange(50, 70),
+          particleCount: randomInRange(50, 100),
+          origin: { y: 1 }
+        });
       })
       .catch((exception) => setStatusMessage(exception.message))
       .finally(() => setProcessing(false))
