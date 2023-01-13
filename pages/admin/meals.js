@@ -207,7 +207,7 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
         </>
         )}
 
-        {currentPlan.observations && <>
+        {currentPlan.foodPlan.observations && <>
           <Spacer y={1} />
           <Card>
             <Card.Body>
@@ -216,7 +216,7 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
                   <Text h3>Observations</Text>
                 </Grid>
                 <Grid xs={12} justify="left">
-                  <Text h6 css={{ textAlign: 'left' }}>{currentPlan.observations}</Text>
+                  <Text h6 css={{ textAlign: 'left' }}>{currentPlan.foodPlan.observations}</Text>
                 </Grid>
               </Grid.Container>
             </Card.Body>
