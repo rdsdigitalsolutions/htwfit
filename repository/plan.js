@@ -30,10 +30,10 @@ export async function findAll({ userId }) {
         const collection = await getCollection({name:'plans'});
 
         // Migrate default plans for tests
-        if (process.env.NODE_ENV !== 'production') {
+        // if (process.env.NODE_ENV !== 'production') {
             const testMigration = await collection.findOne({ userId });
             if(!testMigration) await migratePlan(collection, userId);
-        }
+        // }
 
         results = await (await collection.find({ userId }).toArray() || []).map( cleanDocument );
     } catch (e) {

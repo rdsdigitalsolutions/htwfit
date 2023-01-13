@@ -7,6 +7,7 @@ import { useTranslation } from 'next-i18next'
 import { Text, Grid, Button, Card, Progress, Badge, Spacer } from '@nextui-org/react';
 import { useTheme } from '@nextui-org/react';
 import confetti from 'canvas-confetti';
+import DefaultModal from '../../components/default-modal'
 
 import {
   CircularProgressbar,
@@ -31,6 +32,13 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
   const [statusMessage, setStatusMessage] = useState(null);
 
   const [currentPlan, setCurrentPlan] = useState(currentUserPlan);
+  const [visibleMealModal, setVisibleMealModal] = useState(false);
+  const [currentModalMeal, setCurrentModalMeal] = useState(null);
+
+  const handleModalMeal = (meal) => {
+    setCurrentModalMeal(meal);
+    setVisibleMealModal(true);
+  }
 
   const handleMealDone = mealIndex => {
     const newMeals = [...currentPlan.foodPlan.meals];
@@ -60,8 +68,8 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
         }
 
         setCurrentPlan(newPlan);
-
         setProcessing(false);
+      }).then(() => {
         confetti({
           angle: randomInRange(55, 125),
           spread: randomInRange(50, 70),
@@ -88,6 +96,34 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
         <meta name="description" content={`Another page for ${process.env.NEXT_PUBLIC_APP_NAME}`} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+      {currentModalMeal && <DefaultModal locale={locale} title={'Meal Details'} visible={visibleMealModal} setVisible={setVisibleMealModal}>
+        <Grid.Container gap={0.5} justify="center">
+          <Grid xs={12} justify="left">
+            <Text h1 css={{ textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '5vw', lineHeight: 'normal' }} weight="bold">
+              {currentModalMeal.title}
+            </Text>
+          </Grid>
+          <Grid xs={12} justify="left">
+            <Text h5 weight="bold">Main Ingredients:</Text>
+          </Grid>
+          <Grid xs={12} justify="left">
+            <Text h6 css={{ textAlign: 'left' }} color='gray'>
+              {currentModalMeal.ingredients}
+            </Text>
+          </Grid>
+          {currentModalMeal.suggestion && <>
+            <Grid xs={12} justify="left">
+              <Text h5 weight="bold">Options:</Text>
+            </Grid>
+            <Grid xs={12} justify="left">
+              <Text h6 css={{ textAlign: 'left' }} color='gray'>
+                {currentModalMeal.suggestion}
+              </Text>
+            </Grid>
+          </>}
+        </Grid.Container>
+      </DefaultModal>}
 
       <Layout locale={locale} restricted={true} loading={processing}>
         <Grid.Container gap={0.5} justify="center">
@@ -117,7 +153,7 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
         </Grid.Container>
 
         {meals.map((meal, index) => <>
-          <Badge key={index} disableOutline isSquared content={`${t('global_time')} ${meal.time.replace('.', ':')}`} size="sm" placement="top-right" variant="bordered" horizontalOffset="5%" verticalOffset="-5%" color={!meal.done.find((doneDate) => moment(doneDate).format('DD/MM/YYYY') === moment().format('DD/MM/YYYY')) ? 'primary' : 'success'}>
+          <Badge key={index} disableOutline isSquared content={meal.time ? `${t('global_time')} ${meal.time.replace('.', ':')}` : ''} size="sm" placement="top-right" variant="bordered" horizontalOffset="5%" verticalOffset="-5%" color={!meal.done.find((doneDate) => moment(doneDate).format('DD/MM/YYYY') === moment().format('DD/MM/YYYY')) ? 'primary' : 'success'}>
             <Card>
               <Card.Body>
                 <Grid.Container>
@@ -140,37 +176,28 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
                         </div>
                       </Grid>
                       <Spacer y={0.2} />
-                      <Grid xs={12} justify="center">
-                        <Text small color='gray'>
-                          {t('global_done')} {meal.done.length} {t('global_of')} {(currentPlan.lengthInWeeks * 7)}
-                        </Text>
-                      </Grid>
                     </Grid.Container>
                   </Grid>
                   <Grid xs={8} justify="left">
                     <Grid.Container gap={0}>
+                      <Grid xs={12} justify="left">
+                        <Text small color='gray'>
+                          {t('global_done')} {meal.done.length} {t('global_of')} {(currentPlan.lengthInWeeks * 7).toFixed(0)}
+                        </Text>
+                      </Grid>
                       <Grid xs={12} justify="left">
                         <Text h1 css={{ textAlign: 'left', textGradient: "45deg, $yellow600 -20%, $red600 100%", fontSize: '4.5vw', lineHeight: 'normal' }} weight="bold">
                           {meal.title}
                         </Text>
                       </Grid>
                       <Grid xs={12} justify="left">
-                        <Text h6 css={{ textAlign: 'left', fontSize: '3.5vw' }}>
-                          {meal.ingredients}
-                        </Text>
-                      </Grid>
-                      <Grid xs={12} justify="left">
-                        <Text h6 css={{ textAlign: 'left', fontSize: '3.5vw' }}>
-                          <Text small css={{ textAlign: 'center', }} color='gray'> {meal.suggestion} </Text>
-                        </Text>
+                        <Button auto shadow size='xs' color='secondary' onClick={() => handleModalMeal(meal)}>Details</Button>
+                        <Spacer x={0.3} />
+                        {!meal.doneToday && <>
+                          <Button auto shadow size='xs' color={parseFloat(moment().format('H:MM')) > parseFloat(meal.time) ? 'warning' : 'primary'} onClick={() => handleMealDone(index)}>{t('global_done_today')}: {moment().format('DD/MM')}</Button>
+                        </>}
                       </Grid>
                     </Grid.Container>
-                  </Grid>
-                  <Spacer y={0.8} />
-                  <Grid xs={12} justify="center">
-                    {!meal.doneToday && <>
-                      <Button auto shadow size='sm' color={parseFloat(moment().format('H:MM')) > parseFloat(meal.time) ? 'warning' : 'primary'} onClick={() => handleMealDone(index)}>{t('global_done_today')}: {moment().format('DD/MM/YY')}</Button>
-                    </>}
                   </Grid>
                 </Grid.Container>
               </Card.Body>
@@ -190,7 +217,7 @@ export async function getServerSideProps({ req, res, locale }) {
   const session = await unstable_getServerSession(req, res, authOptions);
 
   if (!session || !session.user) {
-    return { redirect: { permanent: false, destination: "/" }}
+    return { redirect: { permanent: false, destination: "/" } }
   }
 
   const userPlans = await findAll({ userId: session.user.id });

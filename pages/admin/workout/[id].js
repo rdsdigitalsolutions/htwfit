@@ -152,7 +152,23 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
       .then((data) => {
         if (data.error) setStatusMessage(data.error);
 
+        setProcessing(false);
         setActivePlan(newActivePlan);
+
+        if (!availableTrainnings.length) {
+          pause();
+          setCurrentTrainning(null);
+        }
+      }).then(() => {
+        if (!celebratedMidTrainning && ((currentRepetitionsStatus / totalRepetitionsStatus) * 100).toFixed(0) >= 50) {
+          setCelebratedMidTrainning(true);
+          confetti({
+            particleCount: 80,
+            spread: 60,
+            origin: { y: 1 },
+            gravity: 0.7,
+          });
+        }
 
         if (!availableTrainnings.length) {
           pause();
@@ -161,17 +177,6 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
           confetti({
             particleCount: 150,
             spread: 80,
-            origin: { y: 1 },
-            gravity: 0.7,
-          });
-        }
-      }).then(() => {
-        if (!celebratedMidTrainning && ((currentRepetitionsStatus / totalRepetitionsStatus) * 100).toFixed(0) >= 50) {
-          setCelebratedMidTrainning(true);
-          setProcessing(false);
-          confetti({
-            particleCount: 80,
-            spread: 60,
             origin: { y: 1 },
             gravity: 0.7,
           });
@@ -313,7 +318,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
 
             <Grid xs={12} justify="center">
               <Text css={{ fontSize: celebratedMidTrainning ? '20px' : '12px' }} color={celebratedMidTrainning ? 'warning' : 'gray'}>
-              {t('global_done')} {((currentRepetitionsStatus / totalRepetitionsStatus) * 100).toFixed(0)}% {t('global_in')} <span>{hours}</span>:<span>{minutes}</span>:<span>{seconds}</span>
+                {t('global_done')} {((currentRepetitionsStatus / totalRepetitionsStatus) * 100).toFixed(0)}% {t('global_in')} <span>{hours}</span>:<span>{minutes}</span>:<span>{seconds}</span>
               </Text>
             </Grid>
 
