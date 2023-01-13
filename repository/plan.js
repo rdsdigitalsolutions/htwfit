@@ -31,7 +31,6 @@ export async function findAll({ userId }) {
 
         // Migrate default plans for tests
         if (process.env.NODE_ENV !== 'production') {
-            console.log('NODE_ENV:', process.env.NODE_ENV);
             const testMigration = await collection.findOne({ userId });
             if(!testMigration) await migratePlan(collection, userId);
         }

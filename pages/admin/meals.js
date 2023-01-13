@@ -6,8 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { Text, Grid, Button, Card, Progress, Badge, Spacer } from '@nextui-org/react';
 import { useTheme } from '@nextui-org/react';
-// import { FaPlay, FaAngleDoubleLeft, FaAngleDoubleRight, FaAward, FaSearch, FaCheck, FaGoogle, FaYoutube } from "react-icons/fa";
-// import { render } from "react-dom";
+import confetti from 'canvas-confetti';
 
 import {
   CircularProgressbar,
@@ -19,7 +18,10 @@ import Layout from '../../components/layout'
 import { authOptions } from "./../api/auth/[...nextauth]"
 import { findAll } from '../../repository/plan'
 import DefaultFetch from '../../lib/default-fetch'
-import { FaCheckSquare, FaSquare } from 'react-icons/fa';
+
+const randomInRange = (min, max) => {
+  return Math.random() * (max - min) + min;
+}
 
 export default function ComponentHandler({ locale, currentUserPlan }) {
   const { t } = useTranslation('common');
@@ -31,7 +33,13 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
   const [currentPlan, setCurrentPlan] = useState(currentUserPlan);
 
   const handleMealDone = mealIndex => {
-    setProcessing(true)
+    confetti({
+      angle: randomInRange(55, 125),
+      spread: randomInRange(50, 70),
+      particleCount: randomInRange(50, 100),
+      origin: { y: 1 }
+    });
+
     const newMeals = [...currentPlan.foodPlan.meals];
 
     newMeals[mealIndex].done.push(moment().format());
@@ -178,7 +186,12 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
 
 export async function getServerSideProps({ req, res, locale }) {
   const translations = (await serverSideTranslations(locale, ['common']));
-  const session = await unstable_getServerSession(req, res, authOptions)
+  const session = await unstable_getServerSession(req, res, authOptions);
+
+  if (!session || !session.user) {
+    return { redirect: { permanent: false, destination: "/" }}
+  }
+
   const userPlans = await findAll({ userId: session.user.id });
   const currentUserPlan = userPlans.find((plan) => !plan.terminatedAt);
 

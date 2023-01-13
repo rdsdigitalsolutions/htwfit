@@ -259,7 +259,11 @@ export default function ComponentHandler({ locale, session }) {
 
 export async function getServerSideProps({ req, res, locale }) {
   const translations = (await serverSideTranslations(locale, ['common']));
-  const session = await unstable_getServerSession(req, res, authOptions)
+  const session = await unstable_getServerSession(req, res, authOptions);
+
+  if (!session || !session.user) {
+    return { redirect: { permanent: false, destination: "/" }}
+  }
 
   return {
     props: { ...translations, locale, session },

@@ -11,6 +11,7 @@ import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import { useStopwatch } from 'react-timer-hook';
 import { useTheme } from '@nextui-org/react';
 import NoSleep from "nosleep.js";
+import confetti from 'canvas-confetti';
 
 import {
   CircularProgressbar,
@@ -39,7 +40,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
   const [selectedExercise, setSelectedExercise] = useState(activePlan.exercises.find((exercise) => exercise.id === id));
   const [activeTrainnings, setActiveTrainnings] = useState(selectedExercise.training.filter((training) => !training.done.find((date) => moment(date).format('DD/MM/YYY') === moment().format('DD/MM/YYY'))));
   const [currentTrainning, setCurrentTrainning] = useState(activeTrainnings[0]);
-  const [availableTrainnings, setAvailableTrainnings] = useState(activeTrainnings.length > 1 ? activeTrainnings.slice(1, activeTrainnings.length) : activeTrainnings);
+  const [availableTrainnings, setAvailableTrainnings] = useState(activeTrainnings.length > 1 ? activeTrainnings.slice(1, activeTrainnings.length) : []);
   const [currentExecutionIndex, setCurrentExecutionIndex] = useState(0);
   const [isResting, setIsResting] = useState(false);
   const [remainingTime, setRemainingTime] = useState(0);
@@ -85,9 +86,9 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
 
       setAvailableTrainnings(newAvailableTrainnings);
       setCurrentTrainning(nextOne);
+    } else {
+      console.log('availableTrainnings:', availableTrainnings)
     }
-
-    return newAvailableTrainnings;
   }
 
   const handleCancellRoutine = () => {
@@ -116,11 +117,11 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
   }
 
   const handleTrainningConclusion = () => {
-    const newAvailableTrainnings = handleCurrentTrainning({});
+    handleCurrentTrainning({});
 
     const newTrainning = {
       ...currentTrainning,
-      ...(currentTrainning.weight[currentTrainning.weight.length-1] !== weightChange && { weight: [...currentTrainning.weight, weightChange] }),
+      ...(currentTrainning.weight[currentTrainning.weight.length - 1] !== weightChange && { weight: [...currentTrainning.weight, weightChange] }),
       done: [...currentTrainning.done, moment().format()],
     };
     const allNewTrainnings = [...selectedExercise.training].map((training) => training.id === newTrainning.id ? newTrainning : training);
@@ -132,7 +133,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
       date: moment().format()
     };
 
-    if (!newAvailableTrainnings.length) {
+    if (!availableTrainnings.length) {
       newSelectedExercise.done.push({ date: moment().format(), duration: minutes + (hours > 0 ? Number((hours / 60).toFixed(0)) : 0) });
       newActivePlan.ongoingSession = null;
     }
@@ -151,9 +152,15 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
 
         setActivePlan(newActivePlan);
 
-        if (!newAvailableTrainnings.length) {
+        if (!availableTrainnings.length) {
           pause();
           setCurrentTrainning(null);
+
+          confetti({
+            particleCount: 150,
+            spread: 80,
+            origin: { y: 1 }
+          });
         }
       })
       .catch((e) => console.log(e.message))
@@ -175,7 +182,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
           {!currentTrainning && <>
             <Grid.Container>
               <Grid xs={12} justify="center">
-                <Button auto shadow size="sm" color='primary' onClick={() => router.push('/admin/workout')}>
+                <Button auto shadow size="sm" color='primary' onClick={() => { setProcessing(true); router.push('/admin/workout'); }}>
                   {t('global_return_exercises')}
                 </Button>
               </Grid>
@@ -333,8 +340,8 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                       <Spacer y={2} />
 
                       <Grid xs={12} justify="center">
-                        <Button auto shadow size="md" color='success' onClick={handleTrainningConclusion}>
-                          {currentRepetitionsStatus === totalRepetitionsStatus ? t('global_conclude') : t('global_start_next')} <Spacer x={0.5} /> <FaAngleDoubleRight />
+                        <Button auto shadow size="md" color={currentRepetitionsStatus === totalRepetitionsStatus ? 'success' : 'primary' } onClick={handleTrainningConclusion}>
+                          {currentRepetitionsStatus === totalRepetitionsStatus ? t('global_conclude') : t('global_start_next')}
                         </Button>
                       </Grid>
                     </Grid.Container>
@@ -373,11 +380,11 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
 
                           <Grid xs={8} justify="left">
                             <Grid.Container gap={0} >
-                              <Grid xs={12} justify="left">
+                              {currentTrainning.observations && <Grid xs={12} justify="left">
                                 <Text h6 css={{ textAlign: 'left' }} color="gray">
                                   {currentTrainning.observations}
                                 </Text>
-                              </Grid>
+                              </Grid>}
                               <Grid xs={12} justify="center">
                                 <Link href={`https://www.google.com/search?tbm=isch&q=${currentTrainning.title}`} target='_blank'>
                                   <Button auto size='sm' shadow color='primary'><FaGoogle /></Button>
@@ -398,7 +405,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                                     size='110'
                                     key={currentExecutionIndex}
                                     isPlaying={isResting}
-                                    strokeWidth={8}
+                                    strokeWidth={14}
                                     duration={currentTrainning.restPause}
                                     trailColor={isDark ? '#000' : '#c6c6c6'}
                                     isSmoothColorTransition={true}
@@ -418,7 +425,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                                   >
                                     {({ remainingTime }) => {
                                       if (remainingTime < currentTrainning.restPause) setRemainingTime(remainingTime);
-                                      return <Button auto shadow size="md" disabled={isResting} color='primary' onClick={() => setIsResting(true)} role="timer" aria-live="assertive">
+                                      return <Button auto shadow size="lg" disabled={isResting} color='primary' onClick={() => setIsResting(true)} role="timer" aria-live="assertive">
                                         {remainingTime !== currentTrainning.restPause ? `${remainingTime}s` : <FaPlay />}
                                       </Button>
                                     }}
@@ -443,8 +450,8 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                     <Card>
                       <Card.Body>
                         <Grid.Container gap={0} >
-                          <Grid xs={5} justify="center">
-                            {weightChange > 0 && <>
+                          {weightChange > 0 && <>
+                            <Grid xs={4} justify="center">
                               <Grid.Container gap={0} >
                                 <Grid xs={12} justify="center">
                                   <Text h2>{weightChange}kg</Text>
@@ -453,17 +460,17 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                                   <Text small color='gray'>{t('global_initial_weight')}</Text>
                                 </Grid>
                               </Grid.Container>
-                            </>}
-                          </Grid>
+                            </Grid>
+                          </>}
 
-                          <Grid xs={6} justify="center">
+                          <Grid xs={weightChange ? 7 : 12} justify={ weightChange ? 'center' : 'center' }>
                             <Grid.Container gap={0} >
-                              <Grid xs={12} justify="right">
+                              <Grid xs={12} justify={ weightChange ? 'right' : 'center' }>
                                 <Text h6 color='primary'>
                                   {t('global_number_of_repetitions')}
                                 </Text>
                               </Grid>
-                              <Grid xs={12} justify="right">
+                              <Grid xs={12} justify={ weightChange ? 'right' : 'center' }>
                                 {currentTrainning.repetitions.map((repetition, index) => <Text key={index} className={index === currentExecutionIndex && !isResting ? styles.blobYellow : styles.blob}>{repetition}</Text>)}
                               </Grid>
                             </Grid.Container>
@@ -473,7 +480,7 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                     </Card>
                   </Grid>
 
-                  {availableTrainnings[1] && <>
+                  {availableTrainnings.length > 0 && <>
                     <Spacer y={0.5} />
                     <Grid xs={12} justify="center">
                       <Card>
@@ -482,10 +489,13 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
                             <Grid xs={4} justify="right">
                               <Text small color='gray'>{t('global_next_exercise')}:</Text>
                             </Grid>
-                            <Grid xs={8} justify="center">
+                            <Grid xs={6} justify="right">
                               <Link href={`https://www.google.com/search?tbm=isch&q=${availableTrainnings[0].title}`} target='_blank'>
                                 <Text small color='warning'>{availableTrainnings[0].title}</Text>
                               </Link>
+                            </Grid>
+                            <Grid xs={2} justify="center">
+                              {availableTrainnings[0].weight.length && <Text small color='gray'>{availableTrainnings[0].weight[availableTrainnings[0].weight.length - 1]}kg</Text>}
                             </Grid>
                           </Grid.Container>
                         </Card.Body>
@@ -525,16 +535,16 @@ export default function ComponentHandler({ locale, initialActivePlan }) {
 
 export async function getServerSideProps({ req, res, locale }) {
   const translations = (await serverSideTranslations(locale, ['common']));
-  const session = await unstable_getServerSession(req, res, authOptions)
+  const session = await unstable_getServerSession(req, res, authOptions);
+
+  if (!session || !session.user) {
+    return { redirect: { permanent: false, destination: "/" } }
+  }
+
   const initialActivePlan = await findOne({ userId: session.user.id });
 
   if (!initialActivePlan || initialActivePlan.terminatedAt) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/admin/planning/dashboard"
-      }
-    }
+    return { redirect: { permanent: false, destination: "/admin/planning/dashboard" } }
   }
 
   return {

@@ -26,10 +26,15 @@ export default function ComponentHandler({ locale }) {
   )
 }
 
-export async function getStaticProps({ locale }) {
-  const translations = (await serverSideTranslations(locale, ['common']))
+export async function getServerSideProps({ req, res, locale }) {
+  const translations = (await serverSideTranslations(locale, ['common']));
+  const session = await unstable_getServerSession(req, res, authOptions);
+
+  if (!session || !session.user) {
+    return { redirect: { permanent: false, destination: "/" }}
+  }
 
   return {
-    props: { ...translations, locale },
+    props: { ...translations, locale, session },
   }
 }
