@@ -15,6 +15,8 @@ export default function ComponentHandler({ children, locale, providers, loading 
   
   const [loadingPage, setLoadingPage] = useState(loading);
 
+  useEffect(() => { setLoadingPage(loading) }, [loading]);
+
   const { data: session, status: sessionStatus } = useSession({
     required: restricted,
     onUnauthenticated() {

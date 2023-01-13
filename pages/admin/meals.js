@@ -61,6 +61,7 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
 
         setCurrentPlan(newPlan);
 
+        setProcessing(false);
         confetti({
           angle: randomInRange(55, 125),
           spread: randomInRange(50, 70),
