@@ -207,6 +207,23 @@ export default function ComponentHandler({ locale, currentUserPlan }) {
         </>
         )}
 
+        {currentPlan.observations && <>
+          <Spacer y={1} />
+          <Card>
+            <Card.Body>
+              <Grid.Container>
+                <Grid xs={12} justify="center">
+                  <Text h3>Observations</Text>
+                </Grid>
+                <Grid xs={12} justify="left">
+                  <Text h6 css={{ textAlign: 'left' }}>{currentPlan.observations}</Text>
+                </Grid>
+              </Grid.Container>
+            </Card.Body>
+          </Card>
+        </>}
+
+
       </Layout>
     </>
   )
